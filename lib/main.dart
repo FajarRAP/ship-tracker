@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ship_tracker/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:ship_tracker/features/auth/data/repositories/auth_repositories_impl.dart';
+import 'package:ship_tracker/features/auth/domain/usecases/login_use_case.dart';
+import 'package:ship_tracker/features/tracker/controller/tracker_controller.dart';
 import 'package:ship_tracker/features/tracker/presentation/tracker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -17,6 +21,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authRemote =
+        AuthRemoteDatasourceImpl(supabase: Supabase.instance.client);
+    final authRepo = AuthRepositoriesImpl(authRemote: authRemote);
+    final _trackerController = Get.put(
+      TrackerController(
+        loginUseCase: LoginUseCase(authRepo: authRepo),
+      ),
+    );
     return GetMaterialApp(
       title: 'Ship Tracker',
       theme: ThemeData(
