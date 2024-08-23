@@ -11,7 +11,7 @@ class AuthRepositoriesImpl implements AuthRepositories {
   Future<void> login(String email, String password) async {
     try {
       final res = await authRemote.login(email, password);
-      print(res);
+      print(res.user);
     } on AuthException catch (ae) {
       print(ae.toString());
     } catch (e) {
@@ -21,6 +21,13 @@ class AuthRepositoriesImpl implements AuthRepositories {
 
   @override
   Future<void> register(String email, String password) async {
-    print('ini adalah register');
+    try {
+      final res = await authRemote.register(email, password);
+      print(res.user);
+    } on AuthException catch (ae) {
+      print(ae.toString());
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

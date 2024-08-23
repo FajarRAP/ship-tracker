@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ship_tracker/features/tracker/controller/tracker_controller.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TrackerPage extends GetView<TrackerController> {
   const TrackerPage({super.key});
@@ -13,8 +14,15 @@ class TrackerPage extends GetView<TrackerController> {
       ),
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
-            controller.loginUseCase('halo', 'lorem');
+          onPressed: () async {
+            // controller.login('fajary781@gmail.com', 'password');
+            // controller.register('fajary781@gmail.com', 'password');
+            // print(await Supabase.instance.client
+            //     .from('ships')
+            //     .insert({'receipt_number': '191102', 'stage_id': 2}));
+            // final datas =
+            // await Supabase.instance.client.from('stages').select();
+            // print(datas.map((e) => '${e['name']}'));
           },
           child: const Text('Test'),
         ),

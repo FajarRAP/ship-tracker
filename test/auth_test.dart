@@ -3,6 +3,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MockSupabase extends Mock implements SupabaseClient {}
+
 class MockGoTrueClient extends Mock implements GoTrueClient {}
 
 void main() {
@@ -16,7 +17,7 @@ void main() {
   });
 
   group('Auth Login - ', () {
-    test('login with wrong credential', () async {
+    test('login with wrong credentials', () async {
       when(
         () => mockGoTrueClient.signInWithPassword(
           email: 'email',
@@ -25,13 +26,28 @@ void main() {
       ).thenThrow(const AuthException('message'));
 
       try {
-        await mockSupabase.auth.signInWithPassword(
-          email: 'email',
-          password: 'password',
-        );
+        await mockSupabase.auth
+            .signInWithPassword(email: 'email', password: 'password');
       } on AuthException catch (e) {
         expect(e, isA<AuthException>());
         expect(e.message, 'message');
+      }
+    });
+
+    test('login with valid credentials but email not confirmed', () async {
+      const message = 'Email not confirmed';
+      when(
+        () => mockGoTrueClient.signInWithPassword(
+            email: 'email@gmail.com', password: 'password'),
+      ).thenThrow(
+        const AuthException(message, statusCode: '400'),
+      );
+
+      try {
+        await mockSupabase.auth
+            .signInWithPassword(email: 'email@gmail.com', password: 'password');
+      } on AuthException catch (e) {
+        expect(e.message, message);
       }
     });
 
