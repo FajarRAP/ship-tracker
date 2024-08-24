@@ -1,4 +1,7 @@
+import 'package:ship_tracker/features/auth/domain/entities/user_entity.dart';
+
 abstract class AuthRepositories {
-  Future<void> login(String email, String password);
-  Future<void> register(String email, String password);
+  Future<UserEntity> login(String email, String password);
+  Future<UserEntity> register(String email, String password);
+  Future<void> logout();
 }

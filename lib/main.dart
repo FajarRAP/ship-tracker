@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:ship_tracker/features/tracker/controller/tracker_controller.dart';
-import 'package:ship_tracker/features/tracker/presentation/tracker.dart';
-import 'package:ship_tracker/service_container.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'features/tracker/controller/tracker_controller.dart';
+import 'features/tracker/presentation/tracker.dart';
+import 'service_container.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
   await Supabase.initialize(
       url: dotenv.env['supa_url']!, anonKey: dotenv.env['supa_anonkey']!);
-  setup(Supabase.instance.client);
+  setup(supabase: Supabase.instance.client);
   runApp(const MyApp());
 }
 

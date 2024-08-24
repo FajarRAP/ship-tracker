@@ -23,8 +23,9 @@ class TrackerPage extends GetView<TrackerController> {
             // final datas =
             // await Supabase.instance.client.from('stages').select();
             // print(datas.map((e) => '${e['name']}'));
+            controller.logout();
           },
-          child: const Text('Test'),
+          child: const Text('LOGOUT'),
         ),
       ),
     );
