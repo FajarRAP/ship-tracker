@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:ship_tracker/core/themes/theme.dart';
-import 'package:ship_tracker/features/tracker/presentation/cubit/ship_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/routes/route.dart';
+import 'core/themes/theme.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/tracker/presentation/cubit/ship_cubit.dart';
 import 'service_container.dart';
 
 Future<void> main() async {
@@ -16,7 +16,7 @@ Future<void> main() async {
     url: dotenv.env['supa_url']!,
     anonKey: dotenv.env['supa_anonkey']!,
   );
-  setup(supabase: Supabase.instance.client);
+  setup();
   runApp(const MyApp());
 }
 

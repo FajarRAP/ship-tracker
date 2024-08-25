@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:ship_tracker/features/auth/domain/usecases/login_use_case.dart';
-import 'package:ship_tracker/features/auth/domain/usecases/logout_use_case.dart';
-import 'package:ship_tracker/features/auth/domain/usecases/register_use_case.dart';
+
+import '../../domain/usecases/login_use_case.dart';
+import '../../domain/usecases/logout_use_case.dart';
+import '../../domain/usecases/register_use_case.dart';
 
 part 'auth_state.dart';
 

@@ -1,7 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ship_tracker/core/common/constants.dart';
+import 'package:ship_tracker/features/tracker/presentation/pages/check_page.dart';
+import 'package:ship_tracker/features/tracker/presentation/pages/pack_page.dart';
 import 'package:ship_tracker/features/tracker/presentation/pages/scan_page.dart';
+import 'package:ship_tracker/features/tracker/presentation/pages/send_page.dart';
 import 'package:ship_tracker/service_container.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -55,5 +58,23 @@ final router = GoRouter(
             key: state.pageKey,
             child: const ScanPage(),
             transitionsBuilder: transitionsBuilder)),
+    GoRoute(
+        path: checkReceiptRoute,
+        pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const CheckPage(),
+            transitionsBuilder: transitionsBuilder)),
+    GoRoute(
+        path: packReceiptRoute,
+        pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const PackPage(),
+            transitionsBuilder: transitionsBuilder)),
+    GoRoute(
+        path: sendReceiptRoute,
+        pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const SendPage(),
+            transitionsBuilder: transitionsBuilder))
   ],
 );

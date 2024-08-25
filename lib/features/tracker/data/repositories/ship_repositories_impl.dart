@@ -1,10 +1,12 @@
 import 'package:dartz/dartz.dart';
-import 'package:ship_tracker/core/failure/failure.dart';
-import 'package:ship_tracker/features/tracker/data/datasources/ship_remote_data_source.dart';
-import 'package:ship_tracker/features/tracker/data/models/ship_model.dart';
-import 'package:ship_tracker/features/tracker/domain/entities/ship_entity.dart';
-import 'package:ship_tracker/features/tracker/domain/repositories/ship_repositories.dart';
+import 'package:ship_tracker/core/exceptions/receipt_exception.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../../../core/failure/failure.dart';
+import '../../domain/entities/ship_entity.dart';
+import '../../domain/repositories/ship_repositories.dart';
+import '../datasources/ship_remote_data_source.dart';
+import '../models/ship_model.dart';
 
 class ShipRepositoriesImpl extends ShipRepositories {
   final ShipRemoteDataSource shipRemote;
@@ -34,6 +36,8 @@ class ShipRepositoriesImpl extends ShipRepositories {
         default:
           return Left(Failure(message: pe.toString()));
       }
+    } on ReceiptException catch (re) {
+      return Left(Failure(message: re.message));
     } catch (e) {
       return Left(Failure(message: e.toString()));
     }

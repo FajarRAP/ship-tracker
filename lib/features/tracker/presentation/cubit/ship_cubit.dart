@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:ship_tracker/features/tracker/domain/entities/ship_entity.dart';
-import 'package:ship_tracker/features/tracker/domain/usecases/get_ships_use_case.dart';
-import 'package:ship_tracker/features/tracker/domain/usecases/insert_ship_use_case.dart';
+
+import '../../domain/entities/ship_entity.dart';
+import '../../domain/usecases/get_ships_use_case.dart';
+import '../../domain/usecases/insert_ship_use_case.dart';
 
 part 'ship_state.dart';
 
@@ -17,6 +18,7 @@ class ShipCubit extends Cubit<ShipState> {
 
   Future<void> getShips(int stageId) async {
     emit(ShipLoading());
+    
     final result = await getShipsUseCase(stageId);
 
     result.fold(
