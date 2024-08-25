@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:get/get.dart';
+import 'package:ship_tracker/core/themes/theme.dart';
+import 'package:ship_tracker/features/tracker/presentation/cubit/ship_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'features/tracker/controller/tracker_controller.dart';
-import 'features/tracker/presentation/tracker.dart';
+import 'core/routes/route.dart';
+import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'service_container.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
   await Supabase.initialize(
-      url: dotenv.env['supa_url']!, anonKey: dotenv.env['supa_anonkey']!);
+    url: dotenv.env['supa_url']!,
+    anonKey: dotenv.env['supa_anonkey']!,
+  );
   setup(supabase: Supabase.instance.client);
   runApp(const MyApp());
 }
@@ -21,15 +25,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _trackerController = Get.put(getIt.get<TrackerController>());
-
-    return GetMaterialApp(
-      title: 'Ship Tracker',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => getIt.get<AuthCubit>()),
+        BlocProvider(create: (context) => getIt.get<ShipCubit>()),
+      ],
+      child: MaterialApp.router(
+        title: 'Ship Tracker',
+        theme: theme,
+        routerConfig: router,
       ),
-      home: const TrackerPage(),
     );
   }
 }

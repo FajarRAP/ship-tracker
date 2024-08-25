@@ -1,3 +1,6 @@
+import 'package:dartz/dartz.dart';
+import 'package:ship_tracker/core/failure/failure.dart';
+import 'package:ship_tracker/features/auth/domain/entities/user_entity.dart';
 import 'package:ship_tracker/features/auth/domain/repositories/auth_repositories.dart';
 
 class LoginUseCase {
@@ -5,5 +8,5 @@ class LoginUseCase {
 
   LoginUseCase({required this.authRepo});
 
-  Future<void> call(String email, String password) async => await authRepo.login(email, password);
+  Future<Either<Failure, UserEntity>> call(String email, String password) async => await authRepo.login(email, password);
 }

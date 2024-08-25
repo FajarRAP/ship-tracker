@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:ship_tracker/core/failure/failure.dart';
 import 'package:ship_tracker/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:ship_tracker/features/auth/data/models/user_model.dart';
 import 'package:ship_tracker/features/auth/domain/entities/user_entity.dart';
@@ -10,30 +12,37 @@ class AuthRepositoriesImpl implements AuthRepositories {
   AuthRepositoriesImpl({required this.authRemote});
 
   @override
-  Future<UserEntity> login(String email, String password) async {
+  Future<Either<Failure, UserEntity>> login(
+      String email, String password) async {
     try {
       final res = await authRemote.login(email, password);
-      return UserModel.fromUser(res.user!);
+      return Right(UserModel.fromUser(res.user!));
     } on AuthException catch (ae) {
       print(ae.toString());
-      rethrow;
+      switch (ae.statusCode) {
+        case '400':
+          return Left(Failure(message: 'Email/Password Salah'));
+        default:
+          return Left(Failure(message: ae.message));
+      }
     } catch (e) {
       print(e.toString());
-      rethrow;
+      return Left(Failure(message: e.toString()));
     }
   }
 
   @override
-  Future<UserEntity> register(String email, String password) async {
+  Future<Either<Failure, UserEntity>> register(
+      String email, String password) async {
     try {
       final res = await authRemote.register(email, password);
-      return UserModel.fromUser(res.user!);
+      return Right(UserModel.fromUser(res.user!));
     } on AuthException catch (ae) {
       print(ae.toString());
-      rethrow;
+      return Left(Failure(message: ae.message));
     } catch (e) {
       print(e.toString());
-      rethrow;
+      return Left(Failure(message: e.toString()));
     }
   }
 
