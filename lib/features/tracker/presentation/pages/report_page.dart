@@ -31,48 +31,6 @@ class ReportPage extends StatelessWidget {
                 PopupMenuItem(
                   onTap: () async {
                     await shipCubit.createReport();
-                    // List<ShipEntity> datas = [];
-                    // final result = await context
-                    //     .read<ShipCubit>()
-                    //     .getShipsUseCase(scanStage);
-                    // result.fold((l) => print(l.message), (r) => datas = r);
-
-                    // Single Sheet
-                    // final Workbook workbook = Workbook();
-                    // final Worksheet sheet = workbook.worksheets[0];
-                    // sheet.getRangeByName('A1').setText('Excel Pertama');
-                    // final bytes = workbook.saveSync();
-                    // workbook.dispose();
-
-                    // Multiple Sheet
-                    // final Workbook workbook = Workbook(4);
-                    // final sheet1 = workbook.worksheets[0];
-                    // final sheet2 = workbook.worksheets[1];
-                    // final sheet3 = workbook.worksheets[2];
-                    // final sheet4 = workbook.worksheets[3];
-                    // sheet1.name = 'Scan';
-                    // sheet2.name = 'Check';
-                    // sheet3.name = 'Pack';
-                    // sheet4.name = 'Send';
-                    // for (int i = 0; i < datas.length; i++) {
-                    //   for (int j = 0; j < 3; j++) {
-                    //     sheet1
-                    //         .getRangeByIndex(i + 1, j + 1)
-                    //         .setText(datas[i].propertyToIndex(j));
-                    //   }
-                    // }
-
-                    // final bytes = workbook.saveSync();
-                    // workbook.dispose();
-
-                    // final directory = await getExternalStorageDirectory();
-                    // final path = directory?.path;
-                    // File file = File('$path/Output.xlsx');
-                    // await file.writeAsBytes(bytes);
-
-                    // if (context.mounted) {
-
-                    // }
                   },
                   child: const Text('Buat Laporan'),
                 ),
