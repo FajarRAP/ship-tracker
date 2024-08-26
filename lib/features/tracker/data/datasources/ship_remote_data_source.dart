@@ -6,7 +6,6 @@ import '../../../../core/exceptions/receipt_exception.dart';
 abstract class ShipRemoteDataSource {
   Future<List<Map<String, dynamic>>> getShips(int stageId);
   Future<List<Map<String, dynamic>>> getAllShips();
-  Future<List<Map<String, dynamic>>> getUniqueReceiptNumber();
   Future<void> insertShip(String receiptNumber, String name, int stageId);
 }
 
@@ -19,7 +18,7 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
     return await supabase
         .from('ships_detail')
         .select(
-            'name, receipt_number:ship_id(receipt_number), stage_name:stage_id(name)')
+            'name, receipt_number:ship_id(receipt_number), stage_name:stage_id(name), created_at')
         .eq('stage_id', stageId);
   }
 
@@ -77,12 +76,7 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
 
   @override
   Future<List<Map<String, dynamic>>> getAllShips() async {
-    return supabase.from('ships_detail').select(
+    return await supabase.from('ships_detail').select(
         'name, receipt_number:ship_id(receipt_number), stage_name:stage_id(name), created_at');
-  }
-
-  @override
-  Future<List<Map<String, dynamic>>> getUniqueReceiptNumber() async {
-    return supabase.from('ships').select('receipt_number');
   }
 }

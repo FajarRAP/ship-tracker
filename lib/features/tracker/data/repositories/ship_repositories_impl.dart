@@ -1,9 +1,8 @@
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ship_tracker/core/common/constants.dart';
-import 'package:ship_tracker/service_container.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
@@ -56,10 +55,6 @@ class ShipRepositoriesImpl extends ShipRepositories {
           .map((e) => ShipModel.fromJson(e))
           .toList();
 
-      final receipts = (await shipRemote.getUniqueReceiptNumber())
-          .map((e) => e['receipt_number'] as String)
-          .toList();
-
       final workbook = Workbook(5);
       final sheet1 = workbook.worksheets[0];
       final sheet2 = workbook.worksheets[1];
@@ -73,71 +68,36 @@ class ShipRepositoriesImpl extends ShipRepositories {
       sheet4.name = 'Pack';
       sheet5.name = 'Send';
 
-      sheet1.getRangeByIndex(1, 1).setText('No');
-      sheet1.getRangeByIndex(1, 2).setText('Nomor Resi');
-      sheet1.getRangeByIndex(1, 3).setText('Scan Resi');
-      sheet1.getRangeByIndex(1, 4).setText('Check Resi');
-      sheet1.getRangeByIndex(1, 5).setText('Packing');
-      sheet1.getRangeByIndex(1, 6).setText('Kirim');
-      sheet1.getRangeByIndex(1, 7).setText('Tanggal');
-
-      for (int i = 0; i < receipts.length; i++) {
-        final temp = ships.where((e) => e.receipt == receipts[i]).toList();
-        final names = temp.map((e) => e.name).toList();
-
-        switch (names.length) {
-          case 0:
-            names.addAll(['-', '-', '-', '-']);
-            break;
-          case 1:
-            names.addAll(['-', '-', '-']);
-            break;
-          case 2:
-            names.addAll(['-', '-']);
-            break;
-          case 3:
-            names.addAll(['-']);
-            break;
-        }
-
-        List<String> data = [
-          '${i + 1}',
-          receipts[i],
-          ...names,
-          temp.last.createdAt.toIso8601String()
-        ];
-
-        for (int j = 0; j < data.length; j++) {
-          sheet1.getRangeByIndex(i + 2, j + 1).setText(data[j]);
-        }
-      }
-
-      sheet2.getRangeByIndex(1, 1).setText('No');
-      sheet2.getRangeByIndex(1, 2).setText('Nomor Resi');
-      sheet2.getRangeByIndex(1, 3).setText('Scan Resi');
-      sheet2.getRangeByIndex(1, 4).setText('Tanggal');
-      sheet2.getRangeByIndex(1, 5).setText('Jam');
-
-      final filtered = await getIt
-          .get<SupabaseClient>()
-          .from('ships_detail')
-          .select(
-              'receipt_number:ship_id(receipt_number), name, created_at, stage_name:stage_id(name)')
-          .eq('stage_id', scanStage);
-      final scans = filtered.map((e) => ShipModel.fromJson(e)).toList();
-
-      for (int i = 0; i < scans.length; i++) {
-        final datas = [
-          '${i + 1}',
-          scans[i].receipt,
-          scans[i].name,
-          scans[i].createdAt.toIso8601String(),
-          scans[i].createdAt.toIso8601String()
-        ];
-        for (int j = 0; j < 5; j++) {
-          sheet2.getRangeByIndex(i + 2, j + 1).setText(datas[j]);
-        }
-      }
+      generateSheetsData(
+        isFirstSheet: true,
+        sheet: sheet1,
+        datas: ships,
+        title: ['Scan Resi', 'Check Resi', 'Packing', 'Kirim'],
+      );
+      generateSheetsData(
+        sheet: sheet2,
+        datas: ships,
+        title: ['Scan Resi'],
+        stageName: 'Scan',
+      );
+      generateSheetsData(
+        sheet: sheet3,
+        datas: ships,
+        title: ['Check Resi'],
+        stageName: 'Check',
+      );
+      generateSheetsData(
+        sheet: sheet4,
+        datas: ships,
+        title: ['Packing'],
+        stageName: 'Pack',
+      );
+      generateSheetsData(
+        sheet: sheet5,
+        datas: ships,
+        title: ['Kirim'],
+        stageName: 'Send',
+      );
 
       final bytes = workbook.saveSync();
       workbook.dispose();
@@ -155,10 +115,77 @@ class ShipRepositoriesImpl extends ShipRepositories {
   }
 }
 
-// void sheetLoop(Worksheet sheet, List<ShipEntity> datas) {
-//   for (int i = 0; i < datas.length; i++) {
-//     for (int j = 0; j < 3; j++) {
-//       sheet.getRangeByIndex(i + 1, j + 1).setText(datas[i].propertyToIndex(j));
-//     }
-//   }
-// }
+void generateSheetsData({
+  bool isFirstSheet = false,
+  required Worksheet sheet,
+  required List<ShipEntity> datas,
+  required List<String> title,
+  String? stageName,
+}) {
+  if (isFirstSheet) {
+    final receipts = datas.map((e) => e.receipt).toSet().toList();
+
+    sheet.getRangeByIndex(1, 1).setText('No');
+    sheet.getRangeByIndex(1, 2).setText('Nomor Resi');
+    sheet.getRangeByIndex(1, 3).setText(title[0]);
+    sheet.getRangeByIndex(1, 4).setText(title[1]);
+    sheet.getRangeByIndex(1, 5).setText(title[2]);
+    sheet.getRangeByIndex(1, 6).setText(title[3]);
+    sheet.getRangeByIndex(1, 7).setText('Tanggal');
+
+    for (int i = 0; i < receipts.length; i++) {
+      final temp = datas.where((e) => e.receipt == receipts[i]).toList();
+      final names = temp.map((e) => e.name).toList();
+
+      switch (names.length) {
+        case 0:
+          names.addAll(['-', '-', '-', '-']);
+          break;
+        case 1:
+          names.addAll(['-', '-', '-']);
+          break;
+        case 2:
+          names.addAll(['-', '-']);
+          break;
+        case 3:
+          names.addAll(['-']);
+          break;
+        default:
+          break;
+      }
+
+      List<String> data = [
+        '${i + 1}',
+        receipts[i],
+        ...names,
+        DateFormat('d-M-y').format(temp.last.createdAt)
+      ];
+
+      for (int j = 0; j < data.length; j++) {
+        sheet.getRangeByIndex(i + 2, j + 1).setText(data[j]);
+      }
+    }
+  } else {
+    final filtered = datas.where((e) => e.stage == stageName).toList();
+
+    sheet.getRangeByIndex(1, 1).setText('No');
+    sheet.getRangeByIndex(1, 2).setText('Nomor Resi');
+    sheet.getRangeByIndex(1, 3).setText(title.first);
+    sheet.getRangeByIndex(1, 4).setText('Tanggal');
+    sheet.getRangeByIndex(1, 5).setText('Jam');
+
+    for (int i = 0; i < filtered.length; i++) {
+      final ready = [
+        '${i + 1}',
+        filtered[i].receipt,
+        filtered[i].name,
+        DateFormat('d-M-y').format(filtered[i].createdAt),
+        DateFormat.Hms().format(filtered[i].createdAt)
+      ];
+
+      for (int j = 0; j < 5; j++) {
+        sheet.getRangeByIndex(i + 2, j + 1).setText(ready[j]);
+      }
+    }
+  }
+}
