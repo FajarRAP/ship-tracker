@@ -19,7 +19,7 @@ class _SendPageState extends State<SendPage> {
   @override
   Widget build(BuildContext context) {
     return StageLayout(
-      appBarTitle: 'Send Resi',
+      appBarTitle: 'Kirim Resi',
       stageId: sendStage,
       onTap: () async {
         final String? receipt = await context.push(barcodeScannerRoute);
@@ -29,5 +29,11 @@ class _SendPageState extends State<SendPage> {
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ship_tracker/features/tracker/presentation/cubit/ship_cubit.dart';
+
+import '../cubit/ship_cubit.dart';
 
 Future<void> insertDialog(
   BuildContext context,
@@ -39,6 +40,8 @@ Future<void> insertDialog(
                 if (state is InsertShipFinished) {
                   context.pop();
                   context.read<ShipCubit>().getShips(stageId);
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(state.message)));
                 }
                 if (state is InsertShipError) {
                   ScaffoldMessenger.of(context)

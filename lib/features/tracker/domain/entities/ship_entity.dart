@@ -8,4 +8,10 @@ class ShipEntity {
     required this.name,
     required this.stage,
   });
+
+  String propertyToIndex(int index) => index == 0
+      ? receipt
+      : index == 1
+          ? name
+          : stage;
 }

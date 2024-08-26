@@ -19,14 +19,14 @@ class _ScanPageState extends State<ScanPage> {
   @override
   Widget build(BuildContext context) {
     return StageLayout(
-      appBarTitle: 'Scan Resi',
+      appBarTitle: 'Pindai Resi',
       stageId: scanStage,
       onTap: () async {
         final String? receipt = await context.push(barcodeScannerRoute);
 
         if (context.mounted && receipt != null) {
           insertDialog(context, _formKey, _nameController, receipt, scanStage);
-        }
+        } 
       },
     );
   }

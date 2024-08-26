@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ship_tracker/core/common/constants.dart';
 import 'package:ship_tracker/features/tracker/presentation/pages/check_page.dart';
 import 'package:ship_tracker/features/tracker/presentation/pages/pack_page.dart';
+import 'package:ship_tracker/features/tracker/presentation/pages/report_page.dart';
 import 'package:ship_tracker/features/tracker/presentation/pages/scan_page.dart';
 import 'package:ship_tracker/features/tracker/presentation/pages/send_page.dart';
 import 'package:ship_tracker/service_container.dart';
@@ -75,6 +76,12 @@ final router = GoRouter(
         pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
             child: const SendPage(),
-            transitionsBuilder: transitionsBuilder))
+            transitionsBuilder: transitionsBuilder)),
+    GoRoute(
+        path: reportRoute,
+        pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const ReportPage(),
+            transitionsBuilder: transitionsBuilder)),
   ],
 );

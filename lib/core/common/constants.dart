@@ -6,6 +6,8 @@ const scanReceiptRoute = "/scan-receipt";
 const checkReceiptRoute = "/check-receipt";
 const packReceiptRoute = "/pack-receipt";
 const sendReceiptRoute = "/send-receipt";
+const reportRoute = "/report";
+const profileRoute = "/profile";
 
 const scanStage = 2;
 const checkStage = 3;

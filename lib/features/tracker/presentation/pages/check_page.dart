@@ -19,7 +19,7 @@ class _CheckPageState extends State<CheckPage> {
   @override
   Widget build(BuildContext context) {
     return StageLayout(
-      appBarTitle: 'Check Resi',
+      appBarTitle: 'Cek Resi',
       stageId: checkStage,
       onTap: () async {
         final String? receipt = await context.push(barcodeScannerRoute);
@@ -29,5 +29,11 @@ class _CheckPageState extends State<CheckPage> {
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 }

@@ -50,6 +50,7 @@ class StageLayout extends StatelessWidget {
                   DataColumn(label: Text('Tahapan')),
                   DataColumn(label: Text('Nama')),
                 ],
+                showEmptyRows: false,
                 source: DataSource(
                   row: state.ships.length,
                   ships: state.ships,

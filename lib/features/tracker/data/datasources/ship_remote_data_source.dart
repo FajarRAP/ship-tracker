@@ -5,6 +5,7 @@ import '../../../../core/exceptions/receipt_exception.dart';
 
 abstract class ShipRemoteDataSource {
   Future<List<Map<String, dynamic>>> getShips(int stageId);
+  Future<List<Map<String, dynamic>>> getAllShips();
   Future<void> insertShip(String receiptNumber, String name, int stageId);
 }
 
@@ -41,22 +42,21 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
             .from('ships')
             .select('id, receipt_number, stage_id(id, name)')
             .eq('receipt_number', receiptNumber);
+        final String remoteStageName = datas.first['stage_id']['name'];
 
         if (datas.first['stage_id']['id'] == stageId) {
-          throw ReceiptException(
-              message: 'No resi sudah di ${datas.first['stage_id']['name']}');
+          throw ReceiptException(message: 'No resi sudah di $remoteStageName}');
         }
 
         if (datas.first['stage_id']['id'] > stageId) {
           throw ReceiptException(
-              message:
-                  'Ga bisa mundur, udah nyampe ${datas.first['stage_id']['name']}');
+              message: 'Ga bisa mundur, udah nyampe $remoteStageName');
         }
 
         if (datas.first['stage_id']['id'] < stageId - 1) {
           throw ReceiptException(
               message:
-                  'Jangan loncat, resi ini baru sampai tahap ${datas.first['stage_id']['name']}');
+                  'Jangan loncat, resi ini baru sampai tahap $remoteStageName}');
         }
 
         await supabase.from('ships_detail').insert({
@@ -72,5 +72,11 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
     } catch (e) {
       rethrow;
     }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getAllShips() async {
+    return supabase.from('ships_detail').select(
+        'name, receipt_number:ship_id(receipt_number), stage_name:stage_id(name)');
   }
 }

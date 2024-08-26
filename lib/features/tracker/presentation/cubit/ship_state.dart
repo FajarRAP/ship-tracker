@@ -36,3 +36,17 @@ class InsertShipError extends InsertShip {
 
   InsertShipError(this.message);
 }
+
+class CreateReportLoading extends ShipState {}
+
+class CreateReportLoaded extends ShipState {
+  final String message;
+
+  CreateReportLoaded(this.message);
+}
+
+class CreateReportError extends ShipState {
+  final String message;
+
+  CreateReportError(this.message);
+}

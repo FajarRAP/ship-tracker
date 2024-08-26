@@ -15,10 +15,11 @@ class PackPage extends StatefulWidget {
 class _PackPageState extends State<PackPage> {
   final _nameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return StageLayout(
-      appBarTitle: 'Pack Resi',
+      appBarTitle: 'Bungkus Resi',
       stageId: packStage,
       onTap: () async {
         final String? receipt = await context.push(barcodeScannerRoute);
@@ -28,5 +29,11 @@ class _PackPageState extends State<PackPage> {
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 }
