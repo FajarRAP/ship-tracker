@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:ship_tracker/features/tracker/domain/usecases/create_report_use_case.dart';
+import 'package:ship_tracker/features/tracker/domain/usecases/get_all_spreadsheet_files_use_case.dart';
 
 import '../../domain/entities/ship_entity.dart';
 import '../../domain/usecases/get_ships_use_case.dart';
@@ -13,11 +14,13 @@ class ShipCubit extends Cubit<ShipState> {
     required this.getShipsUseCase,
     required this.insertShipUseCase,
     required this.createReportUseCase,
+    required this.getAllSpreadsheetFilesUseCase,
   }) : super(ShipInitial());
 
   final GetShipsUseCase getShipsUseCase;
   final InsertShipUseCase insertShipUseCase;
   final CreateReportUseCase createReportUseCase;
+  final GetAllSpreadsheetFilesUseCase getAllSpreadsheetFilesUseCase;
 
   Future<void> getShips(int stageId) async {
     emit(ShipLoading());
@@ -43,13 +46,24 @@ class ShipCubit extends Cubit<ShipState> {
   }
 
   Future<void> createReport() async {
-    emit(CreateReportLoading());
+    emit(ReportLoading());
 
     final result = await createReportUseCase();
 
     result.fold(
-      (l) => emit(CreateReportError(l.message)),
-      (r) => emit(CreateReportLoaded(r)),
+      (l) => emit(ReportError(l.message)),
+      (r) => emit(CreateReport(r)),
+    );
+  }
+
+  Future<void> getAllSpreadsheetFiles() async {
+    emit(ReportLoading());
+    
+    final result = await getAllSpreadsheetFilesUseCase();
+
+    result.fold(
+      (l) => emit(ReportError(l.message)),
+      (r) => emit(AllReport(r)),
     );
   }
 }

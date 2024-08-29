@@ -6,4 +6,5 @@ abstract class ShipRepositories {
   Future<Either<Failure, List<ShipEntity>>> getShips(int stageId);
   Future<Either<Failure, String>> insertShip(String receiptNumber, String name, int stageId);
   Future<Either<Failure, String>> createReport();
+  Future<Either<Failure, List<String>>> getAllSpreadsheetFiles();
 }

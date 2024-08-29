@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:ship_tracker/features/tracker/data/datasources/ship_local_data_source.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
@@ -15,8 +16,12 @@ import '../models/ship_model.dart';
 
 class ShipRepositoriesImpl extends ShipRepositories {
   final ShipRemoteDataSource shipRemote;
+  final ShipLocalDataSource shipLocal;
 
-  ShipRepositoriesImpl({required this.shipRemote});
+  ShipRepositoriesImpl({
+    required this.shipRemote,
+    required this.shipLocal,
+  });
 
   @override
   Future<Either<Failure, List<ShipEntity>>> getShips(int stageId) async {
@@ -104,12 +109,24 @@ class ShipRepositoriesImpl extends ShipRepositories {
 
       final directory = await getExternalStorageDirectory();
       final path = directory?.path;
-      File file = File('$path/Output.xlsx');
-      await file.writeAsBytes(bytes);
+      File file = File(
+          '$path/report_${DateFormat('d-M-y_H:mm:s').format(DateTime.now())}.xlsx');
+      await file.writeAsBytes(bytes, flush: true);
 
       return const Right('Berhasil Membuat Laporan');
     } catch (e) {
-      print(e.toString());
+      return Left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<String>>> getAllSpreadsheetFiles() async {
+    try {
+      final directory = await getExternalStorageDirectory();
+      final files = await shipLocal.getAllFiles(directory!);
+      return Right(
+          files.map((e) => e.path.split(RegExp(r'.*files/')).last).toList());
+    } catch (e) {
       return Left(Failure(message: e.toString()));
     }
   }
