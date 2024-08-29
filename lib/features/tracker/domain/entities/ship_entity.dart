@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class ShipEntity {
   final String receipt;
   final String name;
@@ -10,4 +12,6 @@ class ShipEntity {
     required this.stage,
     required this.createdAt,
   });
+
+  String get formattedDate => DateFormat('d-M-y H:mm:ss').format(createdAt);
 }

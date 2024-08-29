@@ -1,4 +1,4 @@
-import 'package:ship_tracker/features/tracker/domain/entities/ship_entity.dart';
+import '../../domain/entities/ship_entity.dart';
 
 class ShipModel extends ShipEntity {
   ShipModel({
@@ -14,8 +14,4 @@ class ShipModel extends ShipEntity {
         stage: json['stage_name']['name'],
         createdAt: DateTime.parse(json['created_at']),
       );
-
-  @override
-  // String toString() => '$receipt - $name - $stage - $createdAt';
-  String toString() => receipt;
 }

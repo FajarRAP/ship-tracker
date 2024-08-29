@@ -1,10 +1,11 @@
 import 'package:dartz/dartz.dart';
-import 'package:ship_tracker/core/failure/failure.dart';
-import 'package:ship_tracker/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:ship_tracker/features/auth/data/models/user_model.dart';
-import 'package:ship_tracker/features/auth/domain/entities/user_entity.dart';
-import 'package:ship_tracker/features/auth/domain/repositories/auth_repositories.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../../../core/failure/failure.dart';
+import '../../domain/entities/user_entity.dart';
+import '../../domain/repositories/auth_repositories.dart';
+import '../datasources/auth_remote_data_source.dart';
+import '../models/user_model.dart';
 
 class AuthRepositoriesImpl implements AuthRepositories {
   final AuthRemoteDataSource authRemote;

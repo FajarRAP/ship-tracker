@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:ship_tracker/features/tracker/domain/usecases/create_report_use_case.dart';
-import 'package:ship_tracker/features/tracker/domain/usecases/get_all_spreadsheet_files_use_case.dart';
 
 import '../../domain/entities/ship_entity.dart';
+import '../../domain/usecases/create_report_use_case.dart';
+import '../../domain/usecases/get_all_spreadsheet_files_use_case.dart';
 import '../../domain/usecases/get_ships_use_case.dart';
 import '../../domain/usecases/insert_ship_use_case.dart';
 

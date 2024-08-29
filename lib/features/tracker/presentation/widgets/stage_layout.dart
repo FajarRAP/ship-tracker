@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/common/datatable_data_source.dart';
 import '../cubit/ship_cubit.dart';
 
 class StageLayout extends StatelessWidget {
@@ -19,6 +18,8 @@ class StageLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shipCubit = context.read<ShipCubit>();
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -43,18 +44,39 @@ class StageLayout extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is ShipLoaded) {
-            return SingleChildScrollView(
-              child: PaginatedDataTable(
-                columns: const <DataColumn>[
-                  DataColumn(label: Text('Nomor Resi')),
-                  DataColumn(label: Text('Tahapan')),
-                  DataColumn(label: Text('Nama')),
-                ],
-                showEmptyRows: false,
-                source: DataSource(
-                  row: state.ships.length,
-                  ships: state.ships,
+            return ListTileTheme(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              tileColor: Colors.green,
+              child: ListView.separated(
+                padding: const EdgeInsets.all(16),
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
+                itemBuilder: (context, index) => ListTile(
+                  contentPadding: const EdgeInsets.only(left: 16),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Nama Ekspedisi',
+                        style: textTheme.titleLarge,
+                      ),
+                      Text(
+                        state.ships[index].formattedDate,
+                        style: textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                  subtitle: Text(
+                    state.ships[index].receipt,
+                    style: textTheme.titleMedium,
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.delete),
+                  ),
                 ),
+                itemCount: state.ships.length,
               ),
             );
           }

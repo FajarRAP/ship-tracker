@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:ship_tracker/core/failure/failure.dart';
-import 'package:ship_tracker/features/auth/domain/entities/user_entity.dart';
-import 'package:ship_tracker/features/auth/domain/repositories/auth_repositories.dart';
+
+import '../../../../core/failure/failure.dart';
+import '../entities/user_entity.dart';
+import '../repositories/auth_repositories.dart';
 
 class LoginUseCase {
   final AuthRepositories authRepo;

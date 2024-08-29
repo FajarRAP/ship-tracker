@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ship_tracker/features/tracker/domain/entities/ship_entity.dart';
+
+import '../../features/tracker/domain/entities/ship_entity.dart';
 
 class DataSource extends DataTableSource {
   final int row;

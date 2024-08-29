@@ -1,4 +1,4 @@
-import 'package:ship_tracker/features/auth/domain/repositories/auth_repositories.dart';
+import '../repositories/auth_repositories.dart';
 
 class LogoutUseCase {
   final AuthRepositories authRepo;
