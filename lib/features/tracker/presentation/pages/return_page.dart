@@ -5,27 +5,27 @@ import '../../../../core/common/constants.dart';
 import '../widgets/insert_data_alert_dialog.dart';
 import '../widgets/stage_layout.dart';
 
-class PackPage extends StatefulWidget {
-  const PackPage({super.key});
+class ReturnPage extends StatefulWidget {
+  const ReturnPage({super.key});
 
   @override
-  State<PackPage> createState() => _PackPageState();
+  State<ReturnPage> createState() => _ReturnPageState();
 }
 
-class _PackPageState extends State<PackPage> {
+class _ReturnPageState extends State<ReturnPage> {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return StageLayout(
-      appBarTitle: 'Bungkus Resi',
-      stageId: packStage,
+      appBarTitle: 'Retur Resi',
+      stageId: returnStage,
       onTap: () async {
         final String receipt = await context.push(barcodeScannerRoute) ?? '-1';
 
         if (context.mounted && receipt != '-1') {
-          insertDialog(context, _formKey, _controller, receipt, packStage);
+          insertDialog(context, _formKey, _controller, receipt, returnStage);
         }
       },
     );

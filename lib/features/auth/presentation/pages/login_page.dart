@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/common/constants.dart';
+import '../../../../core/common/snackbar.dart';
 import '../cubit/auth_cubit.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -71,15 +74,14 @@ class _LoginPageState extends State<LoginPage> {
               child: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is AuthLoaded) {
+                    snackbar(context, 'Berhasil Login');
                     context.go('/tracker');
                   }
                   if (state is AuthError) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text(state.message)));
+                    flushbar(context, state.message);
                   }
                 },
                 builder: (context, state) {
-                  print(state);
                   if (state is AuthLoading) {
                     return const CircularProgressIndicator();
                   }
@@ -93,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 12),
             GestureDetector(
-              onTap: () => context.push('/register'),
+              onTap: () => context.go(registerRoute),
               child: Text(
                 'Klik Di Sini Jika Belum Daftar',
                 style: theme.textTheme.bodyMedium,

@@ -80,6 +80,14 @@ class StageLayout extends StatelessWidget {
               ),
             );
           }
+          if (state is ShipEmpty) {
+            return Center(
+              child: Text('Belum Ada Data', style: textTheme.titleLarge),
+            );
+          }
+          if (state is ShipError) {
+            return Text(state.message);
+          }
           return const SizedBox();
         },
       ),

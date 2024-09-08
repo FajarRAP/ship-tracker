@@ -13,7 +13,7 @@ class ScanPage extends StatefulWidget {
 }
 
 class _ScanPageState extends State<ScanPage> {
-  final _nameController = TextEditingController();
+  final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -22,18 +22,18 @@ class _ScanPageState extends State<ScanPage> {
       appBarTitle: 'Pindai Resi',
       stageId: scanStage,
       onTap: () async {
-        final String? receipt = await context.push(barcodeScannerRoute);
+        final String receipt = await context.push(barcodeScannerRoute) ?? '-1';
 
-        if (context.mounted && receipt != null) {
-          insertDialog(context, _formKey, _nameController, receipt, scanStage);
-        } 
+        if (context.mounted && receipt != '-1') {
+          insertDialog(context, _formKey, _controller, receipt, scanStage);
+        }
       },
     );
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 }

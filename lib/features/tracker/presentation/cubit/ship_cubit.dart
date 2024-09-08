@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:camera/camera.dart';
 import 'package:meta/meta.dart';
 
 import '../../domain/entities/ship_entity.dart';
@@ -15,12 +16,17 @@ class ShipCubit extends Cubit<ShipState> {
     required this.insertShipUseCase,
     required this.createReportUseCase,
     required this.getAllSpreadsheetFilesUseCase,
+    required this.camera,
   }) : super(ShipInitial());
 
   final GetShipsUseCase getShipsUseCase;
   final InsertShipUseCase insertShipUseCase;
   final CreateReportUseCase createReportUseCase;
   final GetAllSpreadsheetFilesUseCase getAllSpreadsheetFilesUseCase;
+  final CameraDescription camera;
+
+  late List<String> shortFilename;
+  late String picturePath;
 
   Future<void> getShips(int stageId) async {
     emit(ShipLoading());
@@ -29,7 +35,7 @@ class ShipCubit extends Cubit<ShipState> {
 
     result.fold(
       (l) => emit(ShipError(l.message)),
-      (r) => emit(ShipLoaded(r)),
+      (r) => r.isEmpty ? emit(ShipEmpty()) : emit(ShipLoaded(r)),
     );
   }
 
@@ -58,12 +64,16 @@ class ShipCubit extends Cubit<ShipState> {
 
   Future<void> getAllSpreadsheetFiles() async {
     emit(ReportLoading());
-    
+
     final result = await getAllSpreadsheetFilesUseCase();
 
     result.fold(
       (l) => emit(ReportError(l.message)),
-      (r) => emit(AllReport(r)),
+      (r) {
+        shortFilename =
+            r.map((e) => e.split(RegExp(r'.*files/')).last).toList();
+        emit(AllReport(r));
+      },
     );
   }
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:ship_tracker/core/common/snackbar.dart';
 
+import '../../../../core/common/constants.dart';
 import '../cubit/ship_cubit.dart';
 
 class ReportPage extends StatelessWidget {
@@ -14,12 +17,11 @@ class ReportPage extends StatelessWidget {
     return BlocListener<ShipCubit, ShipState>(
       listener: (context, state) {
         if (state is CreateReport) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
+          flushbar(context, state.message);
+          shipCubit.getAllSpreadsheetFiles();
         }
         if (state is ReportError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
+          flushbar(context, state.message);
         }
       },
       child: Scaffold(
@@ -50,7 +52,8 @@ class ReportPage extends StatelessWidget {
                 child: ListView.builder(
                   itemBuilder: (context, index) => ListTile(
                     contentPadding: const EdgeInsets.only(left: 16),
-                    title: Text(state.reports[index]),
+                    leading: Image.asset(spreadsheetIcon),
+                    title: Text(shipCubit.shortFilename[index]),
                     trailing: PopupMenuButton(
                       itemBuilder: (context) => <PopupMenuItem>[
                         PopupMenuItem(
@@ -58,7 +61,8 @@ class ReportPage extends StatelessWidget {
                           child: const Text('Buka'),
                         ),
                         PopupMenuItem(
-                          onTap: () {},
+                          onTap: () async => await Share.shareXFiles(
+                              [XFile(state.reports[index])]),
                           child: const Text('Bagikan'),
                         ),
                       ],

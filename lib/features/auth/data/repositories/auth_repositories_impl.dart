@@ -40,7 +40,14 @@ class AuthRepositoriesImpl implements AuthRepositories {
       return Right(UserModel.fromUser(res.user!));
     } on AuthException catch (ae) {
       print(ae.toString());
-      return Left(Failure(message: ae.message));
+      switch (ae.code) {
+        case 'user_already_exists':
+          return Left(Failure(message: 'Email telah digunakan'));
+        case 'weak_password':
+          return Left(Failure(message: 'Password Minimal 6 Karakter'));
+        default:
+          return Left(Failure(message: ae.message));
+      }
     } catch (e) {
       print(e.toString());
       return Left(Failure(message: e.toString()));

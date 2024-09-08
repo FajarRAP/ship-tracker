@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/common/snackbar.dart';
 import '../cubit/ship_cubit.dart';
 
 Future<void> insertDialog(
   BuildContext context,
   GlobalKey<FormState> formKey,
-  TextEditingController nameController,
+  TextEditingController controller,
   String receipt,
   int stageId,
 ) =>
@@ -18,7 +19,7 @@ Future<void> insertDialog(
         content: Form(
           key: formKey,
           child: TextFormField(
-            controller: nameController,
+            controller: controller,
             decoration: const InputDecoration(
               hintText: 'Nama',
             ),
@@ -31,7 +32,7 @@ Future<void> insertDialog(
               if (formKey.currentState!.validate()) {
                 await context
                     .read<ShipCubit>()
-                    .insertShip(receipt, nameController.text, stageId);
+                    .insertShip(receipt, controller.text, stageId);
               }
             },
             child: BlocConsumer<ShipCubit, ShipState>(
@@ -40,12 +41,10 @@ Future<void> insertDialog(
                 if (state is InsertShipFinished) {
                   context.pop();
                   context.read<ShipCubit>().getShips(stageId);
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(state.message)));
+                  flushbar(context, state.message);
                 }
                 if (state is InsertShipError) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(state.message)));
+                  flushbar(context, state.message);
                 }
               },
               builder: (context, state) {

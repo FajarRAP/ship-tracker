@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -20,7 +21,7 @@ import 'features/tracker/presentation/cubit/ship_cubit.dart';
 
 final getIt = GetIt.instance;
 
-void setup() {
+void setup({required CameraDescription camera}) {
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
 
   // Auth
@@ -49,5 +50,6 @@ void setup() {
         createReportUseCase: CreateReportUseCase(shipRepo: getIt.get()),
         getAllSpreadsheetFilesUseCase:
             GetAllSpreadsheetFilesUseCase(shipRepo: getIt.get()),
+        camera: camera,
       ));
 }

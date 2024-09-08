@@ -6,28 +6,34 @@ import '../../../../core/exceptions/receipt_exception.dart';
 abstract class ShipRemoteDataSource {
   Future<List<Map<String, dynamic>>> getShips(int stageId);
   Future<List<Map<String, dynamic>>> getAllShips();
-  Future<void> insertShip(String receiptNumber, String name, int stageId);
+  Future<void> insertShip(
+      String? currentUserId, String receiptNumber, String name, int stageId);
 }
 
 class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
   final SupabaseClient supabase;
 
   ShipRemoteDataSourceImpl({required this.supabase});
+
   @override
   Future<List<Map<String, dynamic>>> getShips(int stageId) async {
     return await supabase
         .from('ships_detail')
         .select(
-            'name, receipt_number:ship_id(receipt_number), stage_name:stage_id(name), created_at')
+            'name, receipt_number:ship_id(receipt_number, user_id), stage_name:stage_id(name), created_at')
         .eq('stage_id', stageId);
   }
 
   @override
-  Future<void> insertShip(
-      String receiptNumber, String name, int stageId) async {
+  Future<void> insertShip(String? currentUserId, String receiptNumber,
+      String name, int stageId) async {
+    if (currentUserId == null) {
+      throw ReceiptException(message: 'Pengguna harus login');
+    }
     try {
       if (stageId == scanStage) {
         final datas = await supabase.from('ships').insert({
+          'user_id': currentUserId,
           'receipt_number': receiptNumber,
           'stage_id': stageId,
         }).select();
@@ -42,10 +48,13 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
             .from('ships')
             .select('id, receipt_number, stage_id(id, name)')
             .eq('receipt_number', receiptNumber);
-        final String remoteStageName = datas.first['stage_id']['name'];
+
+        final String remoteStageName =
+            datas.first['stage_id']['name'].toString().toLowerCase();
 
         if (datas.first['stage_id']['id'] == stageId) {
-          throw ReceiptException(message: 'No resi sudah di $remoteStageName}');
+          throw ReceiptException(
+              message: 'Nomor resi sudah di $remoteStageName');
         }
 
         if (datas.first['stage_id']['id'] > stageId) {
@@ -56,7 +65,7 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
         if (datas.first['stage_id']['id'] < stageId - 1) {
           throw ReceiptException(
               message:
-                  'Jangan loncat, resi ini baru sampai tahap $remoteStageName}');
+                  'Jangan loncat, resi ini baru sampai tahap $remoteStageName');
         }
 
         await supabase.from('ships_detail').insert({

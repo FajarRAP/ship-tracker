@@ -13,7 +13,7 @@ class CheckPage extends StatefulWidget {
 }
 
 class _CheckPageState extends State<CheckPage> {
-  final _nameController = TextEditingController();
+  final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -22,10 +22,10 @@ class _CheckPageState extends State<CheckPage> {
       appBarTitle: 'Cek Resi',
       stageId: checkStage,
       onTap: () async {
-        final String? receipt = await context.push(barcodeScannerRoute);
+        final String receipt = await context.push(barcodeScannerRoute) ?? '-1';
 
-        if (context.mounted && receipt != null) {
-          insertDialog(context, _formKey, _nameController, receipt, checkStage);
+        if (context.mounted && receipt != '-1') {
+          insertDialog(context, _formKey, _controller, receipt, checkStage);
         }
       },
     );
@@ -33,7 +33,7 @@ class _CheckPageState extends State<CheckPage> {
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 }

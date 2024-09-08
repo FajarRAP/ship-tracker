@@ -13,7 +13,7 @@ class SendPage extends StatefulWidget {
 }
 
 class _SendPageState extends State<SendPage> {
-  final _nameController = TextEditingController();
+  final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -22,10 +22,10 @@ class _SendPageState extends State<SendPage> {
       appBarTitle: 'Kirim Resi',
       stageId: sendStage,
       onTap: () async {
-        final String? receipt = await context.push(barcodeScannerRoute);
+        final String receipt = await context.push(barcodeScannerRoute) ?? '-1';
 
-        if (context.mounted && receipt != null) {
-          insertDialog(context, _formKey, _nameController, receipt, sendStage);
+        if (context.mounted && receipt != '-1') {
+          insertDialog(context, _formKey, _controller, receipt, sendStage);
         }
       },
     );
@@ -33,7 +33,7 @@ class _SendPageState extends State<SendPage> {
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 }

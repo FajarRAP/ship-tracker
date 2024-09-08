@@ -17,6 +17,8 @@ class ShipLoaded extends GetShip {
   ShipLoaded(this.ships);
 }
 
+class ShipEmpty extends GetShip {}
+
 class ShipError extends GetShip {
   final String message;
 

@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,12 +12,14 @@ import 'service_container.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final cameras = await availableCameras();
+  final firstCamera = cameras.first;
   await dotenv.load();
   await Supabase.initialize(
-    url: dotenv.env['supa_url']!,
-    anonKey: dotenv.env['supa_anonkey']!,
+    url: dotenv.get('supa_url'),
+    anonKey: dotenv.get('supa_anonkey'),
   );
-  setup();
+  setup(camera: firstCamera);
   runApp(const MyApp());
 }
 
