@@ -13,13 +13,12 @@ import 'service_container.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
-  final firstCamera = cameras.first;
   await dotenv.load();
   await Supabase.initialize(
     url: dotenv.get('supa_url'),
     anonKey: dotenv.get('supa_anonkey'),
   );
-  setup(camera: firstCamera);
+  setup(camera: cameras.first);
   runApp(const MyApp());
 }
 

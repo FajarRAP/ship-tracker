@@ -25,16 +25,6 @@ class StageLayout extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(appBarTitle),
-        actions: [
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                onTap: onTap,
-                child: const Text('Scan'),
-              ),
-            ],
-          ),
-        ],
       ),
       body: BlocBuilder<ShipCubit, ShipState>(
         bloc: shipCubit..getShips(stageId),
@@ -90,6 +80,10 @@ class StageLayout extends StatelessWidget {
           }
           return const SizedBox();
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: onTap,
+        child: const Icon(Icons.document_scanner_rounded),
       ),
     );
   }

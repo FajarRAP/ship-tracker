@@ -7,7 +7,7 @@ Future<void> flushbar(
 ) =>
     Flushbar(
       message: message,
-      animationDuration: const Duration(milliseconds: 3000),
+      animationDuration: const Duration(milliseconds: 1200),
       duration: const Duration(seconds: 2),
     ).show(context);
 
@@ -18,6 +18,6 @@ ScaffoldFeatureController snackbar(
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(milliseconds: 3000),
+        duration: const Duration(milliseconds: 1200),
       ),
     );

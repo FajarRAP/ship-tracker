@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ship_tracker/core/common/constants.dart';
+import 'package:ship_tracker/core/common/my_elevated_button.dart';
 
-import '../../../../core/common/constants.dart';
 import '../../../../core/common/snackbar.dart';
 import '../cubit/auth_cubit.dart';
 
@@ -17,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool isObsecure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +50,16 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(
+                    obscureText: isObsecure,
+                    decoration: InputDecoration(
                       hintText: 'Password',
+                      suffixIcon: IconButton(
+                        onPressed: () =>
+                            setState(() => isObsecure = !isObsecure),
+                        icon: isObsecure
+                            ? const Icon(CupertinoIcons.eye_fill)
+                            : const Icon(CupertinoIcons.eye_slash_fill),
+                      ),
                     ),
                     validator: validator,
                   ),
@@ -56,26 +67,21 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {
+            MyElevatedButton(
+              icon: Icons.login,
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  authCubit.login(
+                  await authCubit.login(
                     _emailController.text.trim(),
                     _passwordController.text.trim(),
                   );
                 }
               },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                fixedSize: Size.fromWidth(MediaQuery.sizeOf(context).width),
-              ),
-              child: BlocConsumer<AuthCubit, AuthState>(
+              label: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is AuthLoaded) {
                     snackbar(context, 'Berhasil Login');
-                    context.go('/tracker');
+                    context.go(trackerRoute);
                   }
                   if (state is AuthError) {
                     flushbar(context, state.message);
@@ -83,22 +89,14 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 builder: (context, state) {
                   if (state is AuthLoading) {
-                    return const CircularProgressIndicator();
+                    return const CircularProgressIndicator(color: Colors.white);
                   }
                   return Text(
                     'Login',
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w500),
+                    style: theme.textTheme.titleLarge
+                        ?.copyWith(color: Colors.white),
                   );
                 },
-              ),
-            ),
-            const SizedBox(height: 12),
-            GestureDetector(
-              onTap: () => context.go(registerRoute),
-              child: Text(
-                'Klik Di Sini Jika Belum Daftar',
-                style: theme.textTheme.bodyMedium,
               ),
             ),
           ],

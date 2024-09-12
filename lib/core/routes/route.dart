@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ship_tracker/core/common/scaffold_with_bottom_navigation_bar.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -29,11 +30,66 @@ Widget transitionsBuilder(BuildContext context, Animation<double> animation,
         Animation<double> secondaryAnimation, Widget child) =>
     transition(animation, child);
 
+final _rootNavigatorkey = GlobalKey<NavigatorState>();
+final _homeNavigatorKey = GlobalKey<NavigatorState>();
+final _profileNavigatorKey = GlobalKey<NavigatorState>();
+
 final router = GoRouter(
+  navigatorKey: _rootNavigatorkey,
   initialLocation: getIt.get<SupabaseClient>().auth.currentSession == null
       ? loginRoute
       : trackerRoute,
   routes: [
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) =>
+          ScaffoldWithBottomNavigationBar(child: navigationShell),
+      branches: <StatefulShellBranch>[
+        StatefulShellBranch(
+          navigatorKey: _homeNavigatorKey,
+          routes: <RouteBase>[
+            GoRoute(
+              path: trackerRoute,
+              builder: (context, state) => const TrackerPage(),
+              routes: <RouteBase>[
+                GoRoute(
+                  path: 'scan',
+                  builder: (context, state) => const ScanPage(),
+                ),
+                GoRoute(
+                  path: 'check',
+                  builder: (context, state) => const CheckPage(),
+                ),
+                GoRoute(
+                  path: 'pack',
+                  builder: (context, state) => const PackPage(),
+                ),
+                GoRoute(
+                  path: 'send',
+                  builder: (context, state) => const SendPage(),
+                ),
+                GoRoute(
+                  path: 'return',
+                  builder: (context, state) => const ReturnPage(),
+                ),
+                GoRoute(
+                  path: 'report',
+                  builder: (context, state) => const ReportPage(),
+                ),
+              ],
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: _profileNavigatorKey,
+          routes: <RouteBase>[
+            GoRoute(
+              path: profileRoute,
+              builder: (context, state) => const ProfilePage(),
+            ),
+          ],
+        ),
+      ],
+    ),
     GoRoute(
       path: loginRoute,
       pageBuilder: (context, state) => CustomTransitionPage(
@@ -49,81 +105,39 @@ final router = GoRouter(
           transitionsBuilder: transitionsBuilder),
     ),
     GoRoute(
-      path: trackerRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const TrackerPage(),
-          transitionsBuilder: transitionsBuilder),
-    ),
-    GoRoute(
       path: barcodeScannerRoute,
       pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const SimpleBarcodeScannerPage(),
           transitionsBuilder: transitionsBuilder),
     ),
-    GoRoute(
-      path: scanReceiptRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const ScanPage(),
-          transitionsBuilder: transitionsBuilder),
-    ),
-    GoRoute(
-      path: checkReceiptRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const CheckPage(),
-          transitionsBuilder: transitionsBuilder),
-    ),
-    GoRoute(
-      path: packReceiptRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const PackPage(),
-          transitionsBuilder: transitionsBuilder),
-    ),
-    GoRoute(
-      path: sendReceiptRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const SendPage(),
-          transitionsBuilder: transitionsBuilder),
-    ),
-    GoRoute(
-      path: returnReceiptRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const ReturnPage(),
-          transitionsBuilder: transitionsBuilder),
-    ),
-    GoRoute(
-      path: reportRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const ReportPage(),
-          transitionsBuilder: transitionsBuilder),
-    ),
-    GoRoute(
-      path: profileRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const ProfilePage(),
-          transitionsBuilder: transitionsBuilder),
-    ),
-    GoRoute(
-      path: cameraRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: TakePictureScreen(camera: getIt.get<ShipCubit>().camera),
-          transitionsBuilder: transitionsBuilder),
-    ),
-    GoRoute(
-      path: displayPictureRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const DisplayPictureScreen(),
-          transitionsBuilder: transitionsBuilder),
-    )
+    // GoRoute(
+    //   path: reportRoute,
+    //   pageBuilder: (context, state) => CustomTransitionPage(
+    //       key: state.pageKey,
+    //       child: const ReportPage(),
+    //       transitionsBuilder: transitionsBuilder),
+    // ),
+    // GoRoute(
+    //   path: profileRoute,
+    //   pageBuilder: (context, state) => CustomTransitionPage(
+    //       key: state.pageKey,
+    //       child: const ProfilePage(),
+    //       transitionsBuilder: transitionsBuilder),
+    // ),
+    // GoRoute(
+    //   path: cameraRoute,
+    //   pageBuilder: (context, state) => CustomTransitionPage(
+    //       key: state.pageKey,
+    //       child: TakePictureScreen(camera: getIt.get<ShipCubit>().camera),
+    //       transitionsBuilder: transitionsBuilder),
+    // ),
+    // GoRoute(
+    //   path: displayPictureRoute,
+    //   pageBuilder: (context, state) => CustomTransitionPage(
+    //       key: state.pageKey,
+    //       child: const DisplayPictureScreen(),
+    //       transitionsBuilder: transitionsBuilder),
+    // )
   ],
 );

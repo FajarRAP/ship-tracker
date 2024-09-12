@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ship_tracker/features/tracker/presentation/widgets/home_menu_card.dart';
 
 import '../../../../core/common/constants.dart';
 import '../../../../core/common/snackbar.dart';
@@ -11,8 +12,6 @@ class TrackerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authCubit = context.read<AuthCubit>();
-
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSignedOut) {
@@ -23,56 +22,51 @@ class TrackerPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Ship Tracker'),
-          actions: [
-            PopupMenuButton(
-              itemBuilder: (context) => <PopupMenuItem>[
-                PopupMenuItem(
-                  onTap: () {},
-                  child: const Text('Profil'),
-                ),
-                PopupMenuItem(
-                  onTap: () async => await authCubit.logout(),
-                  child: const Text('Logout'),
-                )
-              ],
-            ),
+        ),
+        body: GridView.count(
+          crossAxisCount: 2,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 10,
+          padding: const EdgeInsets.all(16),
+          children: const <Widget>[
+            HomeMenuCard(
+                title: 'Scan Resi',
+                route: scanReceiptRoute,
+                color: Colors.blue),
+            HomeMenuCard(
+                title: 'Scan Checking',
+                route: checkReceiptRoute,
+                color: Colors.red),
+            HomeMenuCard(
+                title: 'Scan Packing',
+                route: packReceiptRoute,
+                color: Colors.green),
+            HomeMenuCard(
+                title: 'Scan Kirim',
+                route: sendReceiptRoute,
+                color: Colors.orange),
+            HomeMenuCard(
+                title: 'Scan Return',
+                route: returnReceiptRoute,
+                color: Colors.purple),
+            HomeMenuCard(
+                title: 'Laporan',
+                route: reportRoute,
+                color: Colors.teal,
+                icon: Icons.line_axis_rounded),
           ],
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () => context.push(scanReceiptRoute),
-                child: const Text('Scan'),
-              ),
-              ElevatedButton(
-                onPressed: () => context.push(checkReceiptRoute),
-                child: const Text('Check'),
-              ),
-              ElevatedButton(
-                onPressed: () => context.push(packReceiptRoute),
-                child: const Text('Pack'),
-              ),
-              ElevatedButton(
-                onPressed: () => context.push(sendReceiptRoute),
-                child: const Text('Send'),
-              ),
-              ElevatedButton(
-                onPressed: () => context.push(returnReceiptRoute),
-                child: const Text('Return'),
-              ),
-              ElevatedButton(
-                onPressed: () => context.push(reportRoute),
-                child: const Text('Report'),
-              ),
-              ElevatedButton(
-                onPressed: () => context.push(cameraRoute),
-                child: const Text('Photo'),
-              ),
-            ],
-          ),
-        ),
+        // body: Center(
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       ElevatedButton(
+        //         onPressed: () => context.push(cameraRoute),
+        //         child: const Text('Photo'),
+        //       ),
+        //     ],
+        //   ),
+        // ),
       ),
     );
   }
