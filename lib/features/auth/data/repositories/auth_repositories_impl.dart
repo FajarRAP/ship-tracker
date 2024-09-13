@@ -55,5 +55,18 @@ class AuthRepositoriesImpl implements AuthRepositories {
   }
 
   @override
+  Future<Either<Failure, UserEntity>> updateUser(
+      Map<String, dynamic> metadata) async {
+    try {
+      final response = await authRemote.updateUser(metadata);
+      print(response);
+      return Right(UserModel.fromUser(response.user!));
+    } catch (e) {
+      print(e.toString());
+      return Left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
   Future<void> logout() async => await authRemote.logout();
 }

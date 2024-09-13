@@ -16,3 +16,7 @@ class AuthError extends AuthState {
 
   AuthError(this.message);
 }
+
+class UpdatingUser extends AuthState {}
+
+class UserUpdated extends AuthState {}

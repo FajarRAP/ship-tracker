@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ship_tracker/core/common/scaffold_with_bottom_navigation_bar.dart';
+import 'package:ship_tracker/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -102,6 +103,13 @@ final router = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const RegisterPage(),
+          transitionsBuilder: transitionsBuilder),
+    ),
+    GoRoute(
+      path: resetPasswordRoute,
+      pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ResetPasswordPage(),
           transitionsBuilder: transitionsBuilder),
     ),
     GoRoute(

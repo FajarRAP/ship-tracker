@@ -66,6 +66,26 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
+            const SizedBox(height: 6),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: GestureDetector(
+                onTap: () => context.push(resetPasswordRoute),
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Lupa Password? ',
+                    style: theme.textTheme.bodyMedium,
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Klik Di Sini',
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(color: theme.colorScheme.primary),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 24),
             MyElevatedButton(
               icon: Icons.login,

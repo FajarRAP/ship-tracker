@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:ship_tracker/features/auth/domain/usecases/update_user_use_case.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../service_container.dart';
@@ -14,13 +15,15 @@ class AuthCubit extends Cubit<AuthState> {
     required this.loginUseCase,
     required this.registerUseCase,
     required this.logoutUseCase,
+    required this.updateUserUseCase,
   }) : super(AuthInitial());
 
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
   final LogoutUseCase logoutUseCase;
+  final UpdateUserUseCase updateUserUseCase;
 
-  final user = getIt.get<SupabaseClient>().auth.currentUser;
+  User? user = getIt.get<SupabaseClient>().auth.currentUser;
 
   Future<void> login(String email, String password) async {
     emit(AuthLoading());
@@ -44,7 +47,22 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
+  Future<void> updateUser(Map<String, dynamic> metadata) async {
+    emit(UpdatingUser());
+
+    final result = await updateUserUseCase(metadata);
+
+    result.fold(
+      (l) => emit(AuthError(l.message)),
+      (r) {
+        user = r;
+        emit(UserUpdated());
+      },
+    );
+  }
+
   Future<void> logout() async {
+    emit(AuthLoading());
     await logoutUseCase();
     emit(AuthSignedOut());
   }

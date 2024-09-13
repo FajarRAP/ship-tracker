@@ -1,22 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ship_tracker/core/common/constants.dart';
 import 'package:ship_tracker/core/common/my_elevated_button.dart';
+import 'package:ship_tracker/core/common/snackbar.dart';
 import 'package:ship_tracker/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:ship_tracker/service_container.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:ship_tracker/features/auth/presentation/widgets/profile_card.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final authCubit = context.read<AuthCubit>();
     final textTheme = Theme.of(context).textTheme;
+    final String? email = authCubit.user?.userMetadata?['email'];
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Profil'),
+        title: const Text('Profile'),
       ),
       body: Center(
         child: Padding(
@@ -33,63 +50,113 @@ class ProfilePage extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    (authCubit.user?.userMetadata?['name'] as String)[0],
+                    ((authCubit.user?.userMetadata?['name'] ?? email!)
+                            as String)[0]
+                        .toUpperCase(),
                     style:
                         textTheme.displayLarge?.copyWith(color: Colors.white),
                   ),
                 ),
               ),
               const SizedBox(height: 12),
-              Text(
-                authCubit.user?.userMetadata?['name'],
-                style: textTheme.headlineMedium,
+              BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  return Text(
+                    authCubit.user?.userMetadata?['name'] ?? email!,
+                    style: textTheme.headlineMedium,
+                  );
+                },
               ),
               const SizedBox(height: 72),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  color: Colors.white,
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      blurRadius: 24,
-                      spreadRadius: 0,
-                      offset: const Offset(0, 8),
-                      color: Colors.black.withOpacity(.12),
-                    )
-                  ],
-                ),
-                padding: const EdgeInsets.all(10),
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.email_rounded,
-                      color: Theme.of(context).colorScheme.primary,
+              BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  return ProfileCard(
+                    title: 'Nama',
+                    body: authCubit.user?.userMetadata?['name'] ??
+                        'Nama Belum Diisi',
+                    icon: Icons.person,
+                    child: IconButton(
+                      onPressed: () async {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    await authCubit.updateUser(
+                                        {'name': _controller.text.trim()});
+                                  }
+                                },
+                                child: BlocConsumer<AuthCubit, AuthState>(
+                                  listener: (context, state) {
+                                    if (state is UserUpdated) {
+                                      context.pop();
+                                      flushbar(context, 'Berhasil Ubah Nama');
+                                    }
+                                    if (state is AuthError) {
+                                      flushbar(context, state.message);
+                                    }
+                                  },
+                                  builder: (context, state) {
+                                    if (state is UpdatingUser) {
+                                      return const CircularProgressIndicator();
+                                    }
+                                    return const Text('Selesai');
+                                  },
+                                ),
+                              ),
+                            ],
+                            content: Form(
+                              key: _formKey,
+                              child: TextFormField(
+                                controller: _controller,
+                                decoration: const InputDecoration(
+                                  hintText: 'Nama',
+                                ),
+                                validator: validator,
+                              ),
+                            ),
+                            title: const Text('Silakan Isi'),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.mode_edit_outline_rounded),
                     ),
-                    const SizedBox(width: 18),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Email',
-                          style: textTheme.titleMedium,
-                        ),
-                        Text(
-                          authCubit.user?.userMetadata?['email'],
-                          style: textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+              ProfileCard(
+                title: 'Email',
+                body: email!,
+                icon: Icons.email_rounded,
               ),
               const SizedBox(height: 24),
               MyElevatedButton(
                 icon: Icons.exit_to_app_rounded,
                 onPressed: () async => authCubit.logout(),
-                label: Text(
-                  'Logout',
-                  style: textTheme.titleLarge?.copyWith(color: Colors.white),
+                label: BlocConsumer<AuthCubit, AuthState>(
+                  listener: (context, state) {
+                    if (state is AuthSignedOut) {
+                      snackbar(context, 'Berhasil Logout');
+                      context.go(loginRoute);
+                    }
+                    if (state is AuthError) {
+                      flushbar(context, state.message);
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is AuthLoading) {
+                      return const CircularProgressIndicator(
+                          color: Colors.white);
+                    }
+                    return Text(
+                      'Logout',
+                      style:
+                          textTheme.titleLarge?.copyWith(color: Colors.white),
+                    );
+                  },
                 ),
               ),
             ],
@@ -98,4 +165,7 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+
+  String? validator(String? value) =>
+      value!.trim().isEmpty ? 'Harap Isi' : null;
 }

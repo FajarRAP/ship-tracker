@@ -1,5 +1,6 @@
 const loginRoute = "/login";
 const registerRoute = "/register";
+const resetPasswordRoute = "/reset-password";
 const trackerRoute = "/";
 const barcodeScannerRoute = "/barcode-scanner";
 const scanReceiptRoute = "${trackerRoute}scan";
