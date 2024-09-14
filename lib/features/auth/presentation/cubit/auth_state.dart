@@ -20,3 +20,7 @@ class AuthError extends AuthState {
 class UpdatingUser extends AuthState {}
 
 class UserUpdated extends AuthState {}
+
+class TokenSended extends AuthState {}
+
+class PasswordChanged extends AuthState {}

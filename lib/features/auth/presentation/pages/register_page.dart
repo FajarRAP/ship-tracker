@@ -1,9 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:ship_tracker/core/common/constants.dart';
-import 'package:ship_tracker/core/common/snackbar.dart';
-import 'package:ship_tracker/features/auth/presentation/cubit/auth_cubit.dart';
+
+import '../../../../core/common/my_elevated_button.dart';
+import '../../../../core/common/snackbar.dart';
+import '../cubit/auth_cubit.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,6 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool isObsecure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +26,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Akun'),
         automaticallyImplyLeading: false,
+        title: const Text('Daftar Akun'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -46,35 +48,37 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Password',
+                      suffixIcon: IconButton(
+                        onPressed: () =>
+                            setState(() => isObsecure = !isObsecure),
+                        icon: isObsecure
+                            ? const Icon(CupertinoIcons.eye_fill)
+                            : const Icon(CupertinoIcons.eye_slash_fill),
+                      ),
                     ),
+                    obscureText: isObsecure,
                     validator: validator,
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {
+            MyElevatedButton(
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  authCubit.register(
+                  await authCubit.register(
                     _emailController.text.trim(),
                     _passwordController.text.trim(),
                   );
                 }
               },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                fixedSize: Size.fromWidth(MediaQuery.sizeOf(context).width),
-              ),
-              child: BlocConsumer<AuthCubit, AuthState>(
+              icon: Icons.person_add_alt_rounded,
+              label: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is AuthLoaded) {
-                    flushbar(context, 'Berhasil Mendaftar, Selamat Datang');
-                    context.go('/tracker');
+                    flushbar(context, 'Berhasil Mendaftarkan Akun');
                   }
                   if (state is AuthError) {
                     flushbar(context, state.message);
@@ -82,22 +86,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
                 builder: (context, state) {
                   if (state is AuthLoading) {
-                    return const CircularProgressIndicator();
+                    return const CircularProgressIndicator(color: Colors.white);
                   }
                   return Text(
                     'Daftar',
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w500),
+                    style: theme.textTheme.titleLarge
+                        ?.copyWith(color: Colors.white),
                   );
                 },
-              ),
-            ),
-            const SizedBox(height: 12),
-            GestureDetector(
-              onTap: () => context.go(loginRoute),
-              child: Text(
-                'Klik Di Sini Jika Sudah Punya Akun',
-                style: theme.textTheme.bodyMedium,
               ),
             ),
           ],
@@ -106,8 +102,11 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  String? validator(String? value) =>
-      value!.trim().isEmpty ? 'Harap Isi' : null;
+  String? validator(String? value) => value!.trim().isEmpty
+      ? 'Harap Isi'
+      : value.length < 6
+          ? 'Password minimal 6 karakter'
+          : null;
 
   @override
   void dispose() {

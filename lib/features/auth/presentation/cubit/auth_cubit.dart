@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:ship_tracker/features/auth/domain/usecases/reset_password_use_case.dart';
+import 'package:ship_tracker/features/auth/domain/usecases/send_password_reset_token_use_case.dart';
 import 'package:ship_tracker/features/auth/domain/usecases/update_user_use_case.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -16,12 +18,16 @@ class AuthCubit extends Cubit<AuthState> {
     required this.registerUseCase,
     required this.logoutUseCase,
     required this.updateUserUseCase,
+    required this.sendPasswordResetTokenUseCase,
+    required this.resetPasswordUseCase,
   }) : super(AuthInitial());
 
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
   final LogoutUseCase logoutUseCase;
   final UpdateUserUseCase updateUserUseCase;
+  final SendPasswordResetTokenUseCase sendPasswordResetTokenUseCase;
+  final ResetPasswordUseCase resetPasswordUseCase;
 
   User? user = getIt.get<SupabaseClient>().auth.currentUser;
 
@@ -32,7 +38,10 @@ class AuthCubit extends Cubit<AuthState> {
 
     result.fold(
       (l) => emit(AuthError(l.message)),
-      (r) => emit(AuthLoaded()),
+      (r) {
+        user = r;
+        emit(AuthLoaded());
+      },
     );
   }
 
@@ -58,6 +67,24 @@ class AuthCubit extends Cubit<AuthState> {
         user = r;
         emit(UserUpdated());
       },
+    );
+  }
+
+  Future<void> sendPasswordResetToken(String email) async {
+    emit(AuthLoading());
+    await sendPasswordResetTokenUseCase(email);
+    emit(TokenSended());
+  }
+
+  Future<void> resetPassword(
+      String token, String email, String password) async {
+    emit(AuthLoading());
+
+    final result = await resetPasswordUseCase(token, email, password);
+
+    result.fold(
+      (l) => emit(AuthError(l.message)),
+      (r) => emit(PasswordChanged()),
     );
   }
 

@@ -44,7 +44,7 @@ class AuthRepositoriesImpl implements AuthRepositories {
         case 'user_already_exists':
           return Left(Failure(message: 'Email telah digunakan'));
         case 'weak_password':
-          return Left(Failure(message: 'Password Minimal 6 Karakter'));
+          return Left(Failure(message: 'Password minimal 6 karakter'));
         default:
           return Left(Failure(message: ae.message));
       }
@@ -58,7 +58,8 @@ class AuthRepositoriesImpl implements AuthRepositories {
   Future<Either<Failure, UserEntity>> updateUser(
       Map<String, dynamic> metadata) async {
     try {
-      final response = await authRemote.updateUser(metadata);
+      final response =
+          await authRemote.updateUser(UserAttributes(data: metadata));
       print(response);
       return Right(UserModel.fromUser(response.user!));
     } catch (e) {
@@ -66,6 +67,26 @@ class AuthRepositoriesImpl implements AuthRepositories {
       return Left(Failure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, UserEntity>> resetPassword(
+      String token, String email, String password) async {
+    try {
+      final attempt = await authRemote.verifyOTP(email, token);
+      final response =
+          await authRemote.updateUser(UserAttributes(password: password));
+      print(attempt);
+      print(response);
+      return Right(UserModel.fromUser(response.user!));
+    } catch (e) {
+      print(e.toString());
+      return Left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<void> sendPasswordResetToken(String email) async =>
+      await authRemote.sendPasswordResetToken(email);
 
   @override
   Future<void> logout() async => await authRemote.logout();

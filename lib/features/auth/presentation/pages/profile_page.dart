@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ship_tracker/core/common/constants.dart';
-import 'package:ship_tracker/core/common/my_elevated_button.dart';
-import 'package:ship_tracker/core/common/snackbar.dart';
-import 'package:ship_tracker/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:ship_tracker/features/auth/presentation/widgets/profile_card.dart';
+
+import '../../../../core/common/constants.dart';
+import '../../../../core/common/my_elevated_button.dart';
+import '../../../../core/common/snackbar.dart';
+import '../cubit/auth_cubit.dart';
+import '../widgets/profile_card.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -27,7 +28,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final authCubit = context.read<AuthCubit>();
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     final String? email = authCubit.user?.userMetadata?['email'];
 
     return Scaffold(
@@ -132,16 +134,33 @@ class _ProfilePageState extends State<ProfilePage> {
                 body: email!,
                 icon: Icons.email_rounded,
               ),
+              const SizedBox(height: 4),
+              if (authCubit.user?.userMetadata?['is_admin'] == true)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    onTap: () => context.push(registerRoute),
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Buat Akun Untuk Pengguna Baru? ',
+                        style: textTheme.bodyMedium,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'Klik Di Sini',
+                            style: textTheme.bodyMedium
+                                ?.copyWith(color: theme.colorScheme.primary),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               const SizedBox(height: 24),
               MyElevatedButton(
                 icon: Icons.exit_to_app_rounded,
                 onPressed: () async => authCubit.logout(),
                 label: BlocConsumer<AuthCubit, AuthState>(
                   listener: (context, state) {
-                    if (state is AuthSignedOut) {
-                      snackbar(context, 'Berhasil Logout');
-                      context.go(loginRoute);
-                    }
                     if (state is AuthError) {
                       flushbar(context, state.message);
                     }
@@ -159,6 +178,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                 ),
               ),
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     final data = await getIt
+              //         .get<sp.SupabaseClient>()
+              //         .auth
+              //         .updateUser(sp.UserAttributes(data: {'is_admin': true}));
+              //     print(data);
+              //   },
+              //   child: const Text('LOREM'),
+              // ),
             ],
           ),
         ),

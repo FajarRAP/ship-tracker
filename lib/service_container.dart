@@ -1,6 +1,5 @@
 import 'package:camera/camera.dart';
 import 'package:get_it/get_it.dart';
-import 'package:ship_tracker/features/auth/domain/usecases/update_user_use_case.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
@@ -9,6 +8,9 @@ import 'features/auth/domain/repositories/auth_repositories.dart';
 import 'features/auth/domain/usecases/login_use_case.dart';
 import 'features/auth/domain/usecases/logout_use_case.dart';
 import 'features/auth/domain/usecases/register_use_case.dart';
+import 'features/auth/domain/usecases/reset_password_use_case.dart';
+import 'features/auth/domain/usecases/send_password_reset_token_use_case.dart';
+import 'features/auth/domain/usecases/update_user_use_case.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/tracker/data/datasources/ship_local_data_source.dart';
 import 'features/tracker/data/datasources/ship_remote_data_source.dart';
@@ -35,6 +37,9 @@ void setup({required CameraDescription camera}) {
         registerUseCase: RegisterUseCase(authRepo: getIt.get()),
         logoutUseCase: LogoutUseCase(authRepo: getIt.get()),
         updateUserUseCase: UpdateUserUseCase(getIt.get()),
+        sendPasswordResetTokenUseCase:
+            SendPasswordResetTokenUseCase(getIt.get()),
+        resetPasswordUseCase: ResetPasswordUseCase(getIt.get()),
       ));
 
   // Ship

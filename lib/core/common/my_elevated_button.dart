@@ -20,7 +20,7 @@ class MyElevatedButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: theme.colorScheme.primary,
-        fixedSize: Size.fromWidth(MediaQuery.sizeOf(context).width),
+        fixedSize: Size(MediaQuery.sizeOf(context).width, 64),
         padding: const EdgeInsets.symmetric(vertical: 14),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),

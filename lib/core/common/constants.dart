@@ -1,16 +1,20 @@
 const loginRoute = "/login";
-const registerRoute = "/register";
+const getTokenResetPasswordRoute = "/get-token-reset-password";
 const resetPasswordRoute = "/reset-password";
+
 const trackerRoute = "/";
-const barcodeScannerRoute = "/barcode-scanner";
 const scanReceiptRoute = "${trackerRoute}scan";
 const checkReceiptRoute = "${trackerRoute}check";
 const packReceiptRoute = "${trackerRoute}pack";
 const sendReceiptRoute = "${trackerRoute}send";
 const returnReceiptRoute = "${trackerRoute}return";
 const reportRoute = "${trackerRoute}report";
-const profileRoute = "/profile";
 const cameraRoute = "$trackerRoute/camera";
+
+const profileRoute = "/profile";
+const registerRoute = "$profileRoute/register";
+
+const barcodeScannerRoute = "/barcode-scanner";
 const displayPictureRoute = "/picture";
 
 const scanStage = 2;

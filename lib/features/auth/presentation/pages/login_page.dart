@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
             Align(
               alignment: Alignment.centerLeft,
               child: GestureDetector(
-                onTap: () => context.push(resetPasswordRoute),
+                onTap: () => context.push(getTokenResetPasswordRoute),
                 child: RichText(
                   text: TextSpan(
                     text: 'Lupa Password? ',
