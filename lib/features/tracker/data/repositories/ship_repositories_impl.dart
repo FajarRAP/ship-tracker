@@ -41,10 +41,7 @@ class ShipRepositoriesImpl extends ShipRepositories {
 
   @override
   Future<Either<Failure, String>> insertShip(
-    String receiptNumber,
-    String name,
-    int stageId,
-  ) async {
+      String receiptNumber, String name, int stageId) async {
     try {
       final currentUserId = getIt.get<SupabaseClient>().auth.currentUser?.id;
       await shipRemote.insertShip(currentUserId, receiptNumber, name, stageId);
@@ -138,6 +135,31 @@ class ShipRepositoriesImpl extends ShipRepositories {
 
       return Right(files.map((e) => e.path).toList());
     } catch (e) {
+      return Left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Either<Failure, String> getImageUrl(String path) {
+    try {
+      final imgPath = shipRemote.getImageUrl(path);
+
+      return Right(imgPath);
+    } catch (e) {
+      print(e.toString());
+      return Left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> uploadImage(String toPath, File file) async {
+    try {
+      final fullPath = await shipRemote.uploadImage(toPath, file);
+      print(fullPath);
+
+      return Right(fullPath);
+    } catch (e) {
+      print(e.toString());
       return Left(Failure(message: e.toString()));
     }
   }

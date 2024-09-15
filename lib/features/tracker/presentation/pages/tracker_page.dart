@@ -56,17 +56,6 @@ class TrackerPage extends StatelessWidget {
                 icon: Icons.line_axis_rounded),
           ],
         ),
-        // body: Center(
-        //   child: Column(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       ElevatedButton(
-        //         onPressed: () => context.push(cameraRoute),
-        //         child: const Text('Photo'),
-        //       ),
-        //     ],
-        //   ),
-        // ),
       ),
     );
   }

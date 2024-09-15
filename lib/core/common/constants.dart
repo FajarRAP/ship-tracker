@@ -9,7 +9,8 @@ const packReceiptRoute = "${trackerRoute}pack";
 const sendReceiptRoute = "${trackerRoute}send";
 const returnReceiptRoute = "${trackerRoute}return";
 const reportRoute = "${trackerRoute}report";
-const cameraRoute = "$trackerRoute/camera";
+const detailReceiptRoute = "${trackerRoute}detail";
+const cameraRoute = "${trackerRoute}camera";
 
 const profileRoute = "/profile";
 const registerRoute = "$profileRoute/register";

@@ -1,16 +1,16 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ship_tracker/core/common/scaffold_with_bottom_navigation_bar.dart';
-import 'package:ship_tracker/features/auth/presentation/pages/get_password_reset_token_page.dart';
-import 'package:ship_tracker/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../features/auth/presentation/pages/get_password_reset_token_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/profile_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/auth/presentation/pages/reset_password_page.dart';
 import '../../features/tracker/presentation/cubit/ship_cubit.dart';
 import '../../features/tracker/presentation/pages/check_page.dart';
+import '../../features/tracker/presentation/pages/detail_ship_page.dart';
 import '../../features/tracker/presentation/pages/pack_page.dart';
 import '../../features/tracker/presentation/pages/report_page.dart';
 import '../../features/tracker/presentation/pages/return_page.dart';
@@ -21,6 +21,7 @@ import '../../features/tracker/presentation/pages/upload_page.dart';
 import '../../features/tracker/presentation/widgets/open_camera.dart';
 import '../../service_container.dart';
 import '../common/constants.dart';
+import '../common/scaffold_with_bottom_navigation_bar.dart';
 
 FadeTransition transition(Animation<double> animation, Widget child) =>
     FadeTransition(
@@ -77,6 +78,10 @@ final router = GoRouter(
                   path: 'report',
                   builder: (context, state) => const ReportPage(),
                 ),
+                GoRoute(
+                  path: 'detail',
+                  builder: (context, state) => const DetailShipPage(),
+                ),
               ],
             ),
           ],
@@ -91,10 +96,6 @@ final router = GoRouter(
                 GoRoute(
                   path: 'register',
                   builder: (context, state) => const RegisterPage(),
-                  // pageBuilder: (context, state) => CustomTransitionPage(
-                  //     key: state.pageKey,
-                  //     child: const RegisterPage(),
-                  //     transitionsBuilder: transitionsBuilder),
                 ),
               ],
             ),
@@ -130,19 +131,19 @@ final router = GoRouter(
           child: const SimpleBarcodeScannerPage(),
           transitionsBuilder: transitionsBuilder),
     ),
-    // GoRoute(
-    //   path: cameraRoute,
-    //   pageBuilder: (context, state) => CustomTransitionPage(
-    //       key: state.pageKey,
-    //       child: TakePictureScreen(camera: getIt.get<ShipCubit>().camera),
-    //       transitionsBuilder: transitionsBuilder),
-    // ),
-    // GoRoute(
-    //   path: displayPictureRoute,
-    //   pageBuilder: (context, state) => CustomTransitionPage(
-    //       key: state.pageKey,
-    //       child: const DisplayPictureScreen(),
-    //       transitionsBuilder: transitionsBuilder),
-    // )
+    GoRoute(
+      path: cameraRoute,
+      pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: TakePictureScreen(camera: getIt.get<ShipCubit>().camera),
+          transitionsBuilder: transitionsBuilder),
+    ),
+    GoRoute(
+      path: displayPictureRoute,
+      pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const DisplayPictureScreen(),
+          transitionsBuilder: transitionsBuilder),
+    )
   ],
 );

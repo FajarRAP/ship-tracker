@@ -72,6 +72,7 @@ class AuthRepositoriesImpl implements AuthRepositories {
   Future<Either<Failure, UserEntity>> resetPassword(
       String token, String email, String password) async {
     try {
+      // Dibalik layar langsung login
       final attempt = await authRemote.verifyOTP(email, token);
       final response =
           await authRemote.updateUser(UserAttributes(password: password));

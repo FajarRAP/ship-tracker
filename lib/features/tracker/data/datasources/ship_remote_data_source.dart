@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/common/constants.dart';
@@ -8,6 +10,8 @@ abstract class ShipRemoteDataSource {
   Future<List<Map<String, dynamic>>> getAllShips();
   Future<void> insertShip(
       String? currentUserId, String receiptNumber, String name, int stageId);
+  Future<String> uploadImage(String path, File file);
+  String getImageUrl(String path);
 }
 
 class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
@@ -88,4 +92,13 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
     return await supabase.from('ships_detail').select(
         'name, receipt_number:ship_id(receipt_number), stage_name:stage_id(name), created_at');
   }
+
+  @override
+  String getImageUrl(String path) =>
+      supabase.storage.from('receipt_images').getPublicUrl(path);
+
+  @override
+  Future<String> uploadImage(String path, File file) async =>
+      await supabase.storage.from('receipt_images').upload(path, file,
+          fileOptions: const FileOptions(cacheControl: '3600', upsert: true));
 }

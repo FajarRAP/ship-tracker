@@ -60,3 +60,33 @@ class ReportError extends ShipState {
 
   ReportError(this.message);
 }
+
+class ReceiptImageState extends ShipState {}
+
+class ImageLoaded extends ReceiptImageState {
+  final String path;
+
+  ImageLoaded(this.path);
+}
+
+class ImageError extends ReceiptImageState {
+  final String message;
+
+  ImageError(this.message);
+}
+
+class UploadImage extends ShipState {}
+
+class ImageUploading extends UploadImage {}
+
+class ImageUploaded extends UploadImage {
+  final String path;
+
+  ImageUploaded(this.path);
+}
+
+class UploadImageError extends UploadImage {
+  final String message;
+
+  UploadImageError(this.message);
+}

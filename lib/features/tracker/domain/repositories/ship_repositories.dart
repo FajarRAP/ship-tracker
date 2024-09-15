@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/failure/failure.dart';
@@ -8,4 +10,6 @@ abstract class ShipRepositories {
   Future<Either<Failure, String>> insertShip(String receiptNumber, String name, int stageId);
   Future<Either<Failure, String>> createReport();
   Future<Either<Failure, List<String>>> getAllSpreadsheetFiles();
+  Future<Either<Failure, String>> uploadImage(String toPath, File file);
+  Either<Failure, String> getImageUrl(String path);
 }

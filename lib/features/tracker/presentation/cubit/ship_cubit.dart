@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:meta/meta.dart';
+import 'package:ship_tracker/features/tracker/domain/usecases/get_image_url_use_case.dart';
+import 'package:ship_tracker/features/tracker/domain/usecases/upload_image_use_case.dart';
 
 import '../../domain/entities/ship_entity.dart';
 import '../../domain/usecases/create_report_use_case.dart';
@@ -16,6 +20,8 @@ class ShipCubit extends Cubit<ShipState> {
     required this.insertShipUseCase,
     required this.createReportUseCase,
     required this.getAllSpreadsheetFilesUseCase,
+    required this.getImageUrlUseCase,
+    required this.uploadImageUseCase,
     required this.camera,
   }) : super(ShipInitial());
 
@@ -23,10 +29,19 @@ class ShipCubit extends Cubit<ShipState> {
   final InsertShipUseCase insertShipUseCase;
   final CreateReportUseCase createReportUseCase;
   final GetAllSpreadsheetFilesUseCase getAllSpreadsheetFilesUseCase;
+  final GetImageUrlUseCase getImageUrlUseCase;
+  final UploadImageUseCase uploadImageUseCase;
   final CameraDescription camera;
 
   late List<String> shortFilename;
+  late List<ShipEntity> ships;
+  late ShipEntity ship;
   late String picturePath;
+
+  void filterShips(String value) {
+    final data = ships.where((e) => e.receipt.contains(value)).toList();
+    data.isEmpty ? emit(ShipEmpty()) : emit(ShipLoaded(data));
+  }
 
   Future<void> getShips(int stageId) async {
     emit(ShipLoading());
@@ -35,7 +50,15 @@ class ShipCubit extends Cubit<ShipState> {
 
     result.fold(
       (l) => emit(ShipError(l.message)),
-      (r) => r.isEmpty ? emit(ShipEmpty()) : emit(ShipLoaded(r)),
+      (r) {
+        if (r.isEmpty) {
+          ships.clear();
+          emit(ShipEmpty());
+        } else {
+          ships = r;
+          emit(ShipLoaded(ships));
+        }
+      },
     );
   }
 
@@ -74,6 +97,26 @@ class ShipCubit extends Cubit<ShipState> {
             r.map((e) => e.split(RegExp(r'.*files/')).last).toList();
         emit(AllReport(r));
       },
+    );
+  }
+
+  void getImageUrl() {
+    final result = getImageUrlUseCase('${ship.receipt}-${ship.stage}');
+
+    result.fold(
+      (l) => emit(ImageError(l.message)),
+      (r) => emit(ImageLoaded(r)),
+    );
+  }
+
+  Future<void> uploadImage(String toPath, File file) async {
+    emit(ImageUploading());
+
+    final result = await uploadImageUseCase(toPath, file);
+
+    result.fold(
+      (l) => emit(UploadImageError(l.message)),
+      (r) => emit(ImageUploaded(r)),
     );
   }
 }
