@@ -23,40 +23,96 @@ class TrackerPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Ship Tracker'),
         ),
-        body: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 10,
-          padding: const EdgeInsets.all(16),
-          children: const <Widget>[
-            HomeMenuCard(
-                title: 'Scan Resi',
-                route: scanReceiptRoute,
-                color: Colors.blue),
-            HomeMenuCard(
-                title: 'Scan Checking',
-                route: checkReceiptRoute,
-                color: Colors.red),
-            HomeMenuCard(
-                title: 'Scan Packing',
-                route: packReceiptRoute,
-                color: Colors.green),
-            HomeMenuCard(
-                title: 'Scan Kirim',
-                route: sendReceiptRoute,
-                color: Colors.orange),
-            HomeMenuCard(
-                title: 'Scan Return',
-                route: returnReceiptRoute,
-                color: Colors.purple),
-            HomeMenuCard(
-                title: 'Laporan',
-                route: reportRoute,
-                color: Colors.teal,
-                icon: Icons.line_axis_rounded),
-          ],
+        body: Center(
+          child: _buildTrackerPage(
+            context.read<AuthCubit>().user?.userMetadata?['role'],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTrackerPage(int? role) {
+    switch (role) {
+      case 1:
+        return const HomeMenuCard(
+          title: 'Scan Resi',
+          route: scanReceiptRoute,
+          color: Colors.blue,
+          size: 200,
+        );
+      case 2:
+        return const HomeMenuCard(
+          title: 'Scan Checking',
+          route: checkReceiptRoute,
+          color: Colors.red,
+          size: 200,
+        );
+      case 3:
+        return const HomeMenuCard(
+          title: 'Scan Packing',
+          route: packReceiptRoute,
+          color: Colors.green,
+          size: 200,
+        );
+      case 4:
+        return const HomeMenuCard(
+          title: 'Scan Kirim',
+          route: sendReceiptRoute,
+          color: Colors.orange,
+          size: 200,
+        );
+      case 5:
+        return const HomeMenuCard(
+          title: 'Scan Return',
+          route: returnReceiptRoute,
+          color: Colors.purple,
+          size: 200,
+        );
+      default:
+        return _buildAdminPage();
+    }
+  }
+
+  Widget _buildAdminPage() {
+    return GridView.count(
+      crossAxisCount: 2,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 10,
+      padding: const EdgeInsets.all(16),
+      children: const <Widget>[
+        HomeMenuCard(
+          title: 'Scan Resi',
+          route: scanReceiptRoute,
+          color: Colors.blue,
+        ),
+        HomeMenuCard(
+          title: 'Scan Checking',
+          route: checkReceiptRoute,
+          color: Colors.red,
+        ),
+        HomeMenuCard(
+          title: 'Scan Packing',
+          route: packReceiptRoute,
+          color: Colors.green,
+        ),
+        HomeMenuCard(
+          title: 'Scan Kirim',
+          route: sendReceiptRoute,
+          color: Colors.orange,
+        ),
+        HomeMenuCard(
+          title: 'Scan Return',
+          route: returnReceiptRoute,
+          color: Colors.purple,
+        ),
+        HomeMenuCard(
+          title: 'Laporan',
+          route: reportRoute,
+          color: Colors.teal,
+          icon: Icons.line_axis_rounded,
+        ),
+      ],
     );
   }
 }
