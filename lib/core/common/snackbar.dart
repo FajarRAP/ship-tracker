@@ -11,7 +11,7 @@ Future<void> flushbar(
       duration: const Duration(seconds: 2),
     ).show(context);
 
-ScaffoldFeatureController snackbar(
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackbar(
   BuildContext context,
   String message,
 ) =>

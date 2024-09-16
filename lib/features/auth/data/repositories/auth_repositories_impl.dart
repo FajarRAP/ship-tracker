@@ -34,9 +34,9 @@ class AuthRepositoriesImpl implements AuthRepositories {
 
   @override
   Future<Either<Failure, UserEntity>> register(
-      String email, String password) async {
+      String email, String password, int role) async {
     try {
-      final res = await authRemote.register(email, password);
+      final res = await authRemote.register(email, password, role);
       return Right(UserModel.fromUser(res.user!));
     } on AuthException catch (ae) {
       print(ae.toString());

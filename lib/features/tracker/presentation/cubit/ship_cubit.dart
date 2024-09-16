@@ -33,10 +33,10 @@ class ShipCubit extends Cubit<ShipState> {
   final UploadImageUseCase uploadImageUseCase;
   final CameraDescription camera;
 
-  late List<String> shortFilename;
-  late List<ShipEntity> ships;
   late ShipEntity ship;
   late String picturePath;
+  List<String> shortFilename = [];
+  List<ShipEntity> ships = [];
 
   void filterShips(String value) {
     final data = ships.where((e) => e.receipt.contains(value)).toList();

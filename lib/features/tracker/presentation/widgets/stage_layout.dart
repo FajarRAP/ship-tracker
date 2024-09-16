@@ -58,6 +58,7 @@ class _StageLayoutState extends State<StageLayout> {
             bloc: shipCubit..getShips(widget.stageId),
             buildWhen: (previous, current) => current is GetShip,
             builder: (context, state) {
+              print(state);
               if (state is ShipLoading) {
                 return const Expanded(
                   child: Center(child: CircularProgressIndicator()),

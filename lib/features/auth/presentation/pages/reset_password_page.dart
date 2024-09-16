@@ -70,20 +70,22 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     validator: (value) => value!.isEmpty ? 'Harap isi' : null,
                   ),
                   const SizedBox(height: 12),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      hintText: 'Password Baru',
-                      suffixIcon: IconButton(
-                        onPressed: () =>
-                            setState(() => isObsecure = !isObsecure),
-                        icon: isObsecure
-                            ? const Icon(CupertinoIcons.eye_fill)
-                            : const Icon(CupertinoIcons.eye_slash_fill),
+                  StatefulBuilder(
+                    builder: (context, setState) => TextFormField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        hintText: 'Password Baru',
+                        suffixIcon: IconButton(
+                          onPressed: () =>
+                              setState(() => isObsecure = !isObsecure),
+                          icon: isObsecure
+                              ? const Icon(CupertinoIcons.eye_fill)
+                              : const Icon(CupertinoIcons.eye_slash_fill),
+                        ),
                       ),
+                      obscureText: isObsecure,
+                      validator: (value) => validator('Password', value),
                     ),
-                    obscureText: isObsecure,
-                    validator: (value) => validator('Password', value),
                   ),
                 ],
               ),

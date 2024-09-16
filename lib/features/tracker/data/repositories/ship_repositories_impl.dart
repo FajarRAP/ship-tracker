@@ -44,7 +44,33 @@ class ShipRepositoriesImpl extends ShipRepositories {
       String receiptNumber, String name, int stageId) async {
     try {
       final currentUserId = getIt.get<SupabaseClient>().auth.currentUser?.id;
-      await shipRemote.insertShip(currentUserId, receiptNumber, name, stageId);
+
+      if (currentUserId == null) {
+        throw ReceiptException(message: 'Pengguna harus login');
+      }
+
+      final data = await shipRemote.getShip(receiptNumber);
+      final String remoteStageName =
+          data['stage_id']['name'].toString().toLowerCase();
+      final int shipId = data['id'];
+
+      if (data['stage_id']['id'] == stageId) {
+        throw ReceiptException(message: 'Nomor resi sudah di $remoteStageName');
+      }
+
+      if (data['stage_id']['id'] > stageId) {
+        throw ReceiptException(
+            message: 'Ga bisa mundur, udah nyampe $remoteStageName');
+      }
+
+      if (data['stage_id']['id'] < stageId - 1) {
+        throw ReceiptException(
+            message:
+                'Jangan loncat, resi ini baru sampai tahap $remoteStageName');
+      }
+
+      await shipRemote.insertShip(
+          currentUserId, receiptNumber, name, stageId, shipId);
 
       return const Right('Berhasil Menyimpan');
     } on PostgrestException catch (pe) {
@@ -56,7 +82,8 @@ class ShipRepositoriesImpl extends ShipRepositories {
       }
     } on ReceiptException catch (re) {
       return Left(Failure(message: re.message));
-    } catch (e) {
+    } catch (e, s) {
+      print(s);
       return Left(Failure(message: e.toString()));
     }
   }

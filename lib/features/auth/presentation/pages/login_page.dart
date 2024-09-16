@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('build');
     final authCubit = context.read<AuthCubit>();
     final theme = Theme.of(context);
 
@@ -48,20 +49,22 @@ class _LoginPageState extends State<LoginPage> {
                     validator: validator,
                   ),
                   const SizedBox(height: 12),
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: isObsecure,
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      suffixIcon: IconButton(
-                        onPressed: () =>
-                            setState(() => isObsecure = !isObsecure),
-                        icon: isObsecure
-                            ? const Icon(CupertinoIcons.eye_fill)
-                            : const Icon(CupertinoIcons.eye_slash_fill),
+                  StatefulBuilder(
+                    builder: (context, setState) => TextFormField(
+                      controller: _passwordController,
+                      obscureText: isObsecure,
+                      decoration: InputDecoration(
+                        hintText: 'Password',
+                        suffixIcon: IconButton(
+                          onPressed: () =>
+                              setState(() => isObsecure = !isObsecure),
+                          icon: isObsecure
+                              ? const Icon(CupertinoIcons.eye_fill)
+                              : const Icon(CupertinoIcons.eye_slash_fill),
+                        ),
                       ),
+                      validator: validator,
                     ),
-                    validator: validator,
                   ),
                 ],
               ),

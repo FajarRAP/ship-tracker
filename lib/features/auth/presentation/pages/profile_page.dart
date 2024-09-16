@@ -178,16 +178,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                 ),
               ),
-              // ElevatedButton(
-              //   onPressed: () async {
-              //     final data = await getIt
-              //         .get<sp.SupabaseClient>()
-              //         .auth
-              //         .updateUser(sp.UserAttributes(data: {'is_admin': true}));
-              //     print(data);
-              //   },
-              //   child: const Text('LOREM'),
-              // ),
             ],
           ),
         ),

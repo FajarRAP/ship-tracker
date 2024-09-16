@@ -30,6 +30,7 @@ class AuthCubit extends Cubit<AuthState> {
   final ResetPasswordUseCase resetPasswordUseCase;
 
   User? user = getIt.get<SupabaseClient>().auth.currentUser;
+  int selectedRole = 0;
 
   Future<void> login(String email, String password) async {
     emit(AuthLoading());
@@ -48,7 +49,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> register(String email, String password) async {
     emit(AuthLoading());
 
-    final result = await registerUseCase(email, password);
+    final result = await registerUseCase(email, password, selectedRole);
 
     result.fold(
       (l) => emit(AuthError(l.message)),
@@ -92,5 +93,10 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     await logoutUseCase();
     emit(AuthSignedOut());
+  }
+
+  void selectRole(dynamic role) {
+    selectedRole = role;
+    emit(AuthInitial());
   }
 }

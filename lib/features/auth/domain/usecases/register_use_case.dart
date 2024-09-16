@@ -9,6 +9,7 @@ class RegisterUseCase {
 
   RegisterUseCase({required this.authRepo});
 
-  Future<Either<Failure, UserEntity>> call(String email, String password) async =>
-      await authRepo.register(email, password);
+  Future<Either<Failure, UserEntity>> call(
+          String email, String password, int role) async =>
+      await authRepo.register(email, password, role);
 }

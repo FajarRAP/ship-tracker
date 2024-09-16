@@ -1,7 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<AuthResponse> register(String email, String password);
+  Future<AuthResponse> register(String email, String password, int role);
   Future<AuthResponse> login(String email, String password);
   Future<AuthResponse> verifyOTP(String email, String token);
   Future<UserResponse> updateUser(UserAttributes userAttr);
@@ -18,8 +18,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       await supabase.auth.signInWithPassword(email: email, password: password);
 
   @override
-  Future<AuthResponse> register(String email, String password) async =>
-      await supabase.auth.signUp(email: email, password: password);
+  Future<AuthResponse> register(
+          String email, String password, int role) async =>
+      await supabase.auth
+          .signUp(email: email, password: password, data: {'role': role});
 
   @override
   Future<AuthResponse> verifyOTP(String email, String token) async =>
