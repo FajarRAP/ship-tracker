@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/common/constants.dart';
+import '../../../../core/helpers/courier_identifier.dart';
 import '../cubit/ship_cubit.dart';
 
 class StageLayout extends StatefulWidget {
@@ -58,7 +59,6 @@ class _StageLayoutState extends State<StageLayout> {
             bloc: shipCubit..getShips(widget.stageId),
             buildWhen: (previous, current) => current is GetShip,
             builder: (context, state) {
-              print(state);
               if (state is ShipLoading) {
                 return const Expanded(
                   child: Center(child: CircularProgressIndicator()),
@@ -88,7 +88,7 @@ class _StageLayoutState extends State<StageLayout> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Nama Ekspedisi',
+                                courierIdentifier(state.ships[index].receipt),
                                 style: textTheme.titleLarge,
                               ),
                               Text(
@@ -102,7 +102,8 @@ class _StageLayoutState extends State<StageLayout> {
                             style: textTheme.titleMedium,
                           ),
                           trailing: IconButton(
-                            onPressed: () {},
+                            onPressed: () => print(
+                                'Hapus Resi ${state.ships[index].receipt}'),
                             icon: const Icon(Icons.delete),
                           ),
                         ),
@@ -120,7 +121,7 @@ class _StageLayoutState extends State<StageLayout> {
                 );
               }
               if (state is ShipError) {
-                return Text(state.message);
+                return Expanded(child: Center(child: Text(state.message)));
               }
               return const SizedBox();
             },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:ship_tracker/core/helpers/courier_identifier.dart';
 
 import '../../../../core/common/constants.dart';
 import '../cubit/ship_cubit.dart';
@@ -183,6 +184,11 @@ class DariChatGPT extends StatelessWidget {
             InfoItem(
               label: 'Nomor Resi',
               value: shipCubit.ship.receipt,
+            ),
+            const SizedBox(height: 8),
+            InfoItem(
+              label: 'Nama Ekspedisi',
+              value: courierIdentifier(shipCubit.ship.receipt),
             ),
             const SizedBox(height: 8),
             InfoItem(
