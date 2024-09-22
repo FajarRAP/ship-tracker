@@ -53,16 +53,20 @@ class ReportPage extends StatelessWidget {
                   itemBuilder: (context, index) => ListTile(
                     contentPadding: const EdgeInsets.only(left: 16),
                     leading: Image.asset(spreadsheetIcon),
-                    title: Text(shipCubit.shortFilename[index]),
+                    title: Text(shipCubit
+                        .shortFilename[state.reports.length - index - 1]),
                     trailing: PopupMenuButton(
                       itemBuilder: (context) => <PopupMenuItem>[
                         PopupMenuItem(
-                          onTap: () => OpenFilex.open(state.reports[index]),
+                          onTap: () => OpenFilex.open(
+                              state.reports[state.reports.length - index - 1]),
                           child: const Text('Buka'),
                         ),
                         PopupMenuItem(
-                          onTap: () async => await Share.shareXFiles(
-                              [XFile(state.reports[index])]),
+                          onTap: () async => await Share.shareXFiles([
+                            XFile(
+                                state.reports[state.reports.length - index - 1])
+                          ]),
                           child: const Text('Bagikan'),
                         ),
                       ],

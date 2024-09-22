@@ -10,7 +10,7 @@ class SendPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StageLayout(
-      appBarTitle: 'Kirim Resi',
+      appBarTitle: 'Scan Kirim',
       stageId: sendStage,
       onTap: () async => await onTapScan(context, sendStage),
     );

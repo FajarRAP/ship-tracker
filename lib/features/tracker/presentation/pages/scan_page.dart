@@ -10,7 +10,7 @@ class ScanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StageLayout(
-      appBarTitle: 'Pindai Resi',
+      appBarTitle: 'Scan Resi',
       stageId: scanStage,
       onTap: () async => await onTapScan(context, scanStage),
     );

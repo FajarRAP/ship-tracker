@@ -10,7 +10,7 @@ class ReturnPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StageLayout(
-      appBarTitle: 'Retur Resi',
+      appBarTitle: 'Scan Return',
       stageId: returnStage,
       onTap: () async => await onTapScan(context, returnStage),
     );

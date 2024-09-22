@@ -10,7 +10,7 @@ class PackPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StageLayout(
-      appBarTitle: 'Bungkus Resi',
+      appBarTitle: 'Scan Packing',
       stageId: packStage,
       onTap: () async => await onTapScan(context, packStage),
     );

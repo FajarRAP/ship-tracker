@@ -99,24 +99,26 @@ class ShipRepositoriesImpl extends ShipRepositories {
           .map((e) => ShipModel.fromJson(e))
           .toList();
 
-      final workbook = Workbook(5);
+      final workbook = Workbook(6);
       final sheet1 = workbook.worksheets[0];
       final sheet2 = workbook.worksheets[1];
       final sheet3 = workbook.worksheets[2];
       final sheet4 = workbook.worksheets[3];
       final sheet5 = workbook.worksheets[4];
+      final sheet6 = workbook.worksheets[5];
 
-      sheet1.name = 'All';
+      sheet1.name = 'Semua';
       sheet2.name = 'Scan';
       sheet3.name = 'Check';
       sheet4.name = 'Pack';
-      sheet5.name = 'Send';
+      sheet5.name = 'Kirim';
+      sheet6.name = 'Return';
 
       generateSheetsData(
         isFirstSheet: true,
         sheet: sheet1,
         datas: ships,
-        title: ['Scan Resi', 'Check Resi', 'Packing', 'Kirim'],
+        title: ['Scan Resi', 'Check Resi', 'Packing', 'Kirim', 'Return'],
       );
       generateSheetsData(
         sheet: sheet2,
@@ -141,6 +143,12 @@ class ShipRepositoriesImpl extends ShipRepositories {
         datas: ships,
         title: ['Kirim'],
         stageName: 'Send',
+      );
+      generateSheetsData(
+        sheet: sheet6,
+        datas: ships,
+        title: ['Return'],
+        stageName: 'Return',
       );
 
       final bytes = workbook.saveSync();
@@ -209,23 +217,30 @@ void generateSheetsData({
     sheet.getRangeByIndex(1, 4).setText(title[1]);
     sheet.getRangeByIndex(1, 5).setText(title[2]);
     sheet.getRangeByIndex(1, 6).setText(title[3]);
-    sheet.getRangeByIndex(1, 7).setText('Tanggal');
+    sheet.getRangeByIndex(1, 7).setText(title[4]);
+    sheet.getRangeByIndex(1, 8).setText('Tanggal');
 
     for (int i = 0; i < receipts.length; i++) {
+      // Filter the current receipt same with receipt in datas variable
       final temp = datas.where((e) => e.receipt == receipts[i]).toList();
+      // Get name from the filtered receipt
       final names = temp.map((e) => e.name).toList();
 
+      // check that every stage has name, if length is 5 (total stage) there is no stage has not scanned
       switch (names.length) {
         case 0:
-          names.addAll(['-', '-', '-', '-']);
+          names.addAll(['-', '-', '-', '-', '-']);
           break;
         case 1:
-          names.addAll(['-', '-', '-']);
+          names.addAll(['-', '-', '-', '-']);
           break;
         case 2:
-          names.addAll(['-', '-']);
+          names.addAll(['-', '-', '-']);
           break;
         case 3:
+          names.addAll(['-', '-']);
+          break;
+        case 4:
           names.addAll(['-']);
           break;
         default:

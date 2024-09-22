@@ -10,7 +10,7 @@ class CheckPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StageLayout(
-      appBarTitle: 'Cek Resi',
+      appBarTitle: 'Scan Checking',
       stageId: checkStage,
       onTap: () async => await onTapScan(context, checkStage),
     );

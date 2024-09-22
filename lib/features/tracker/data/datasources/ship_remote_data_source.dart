@@ -67,7 +67,7 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
   @override
   Future<List<Map<String, dynamic>>> getAllShips() async {
     return await supabase.from('ships_detail').select(
-        'name, receipt_number:ship_id(receipt_number), stage_name:stage_id(name), created_at');
+        'name, receipt_number:ship_id(receipt_number, user_id), stage_name:stage_id(name), created_at');
   }
 
   @override
