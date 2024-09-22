@@ -27,13 +27,14 @@ class ShipRepositoriesImpl extends ShipRepositories {
   @override
   Future<Either<Failure, List<ShipEntity>>> getShips(int stageId) async {
     try {
-      final currentUserId = getIt.get<SupabaseClient>().auth.currentUser?.id;
+      // final currentUserId = getIt.get<SupabaseClient>().auth.currentUser?.id;
       final datas = await shipRemote.getShips(stageId);
 
-      return Right(datas
-          .where((e) => e['receipt_number']['user_id'] == currentUserId)
-          .map((e) => ShipModel.fromJson(e))
-          .toList());
+      // return Right(datas
+      //     .where((e) => e['receipt_number']['user_id'] == currentUserId)
+      //     .map((e) => ShipModel.fromJson(e))
+      //     .toList());
+      return Right(datas.map((e) => ShipModel.fromJson(e)).toList());
     } catch (e) {
       return Left(Failure(message: e.toString()));
     }
@@ -46,7 +47,8 @@ class ShipRepositoriesImpl extends ShipRepositories {
       final currentUserId = getIt.get<SupabaseClient>().auth.currentUser?.id;
 
       if (currentUserId == null) {
-        throw ReceiptException(message: 'Pengguna harus login');
+        throw ReceiptException(
+            statusCode: 403, message: 'Pengguna harus login');
       }
 
       final data = await shipRemote.getShip(receiptNumber);
@@ -55,16 +57,19 @@ class ShipRepositoriesImpl extends ShipRepositories {
       final int shipId = data['id'];
 
       if (data['stage_id']['id'] == stageId) {
-        throw ReceiptException(message: 'Nomor resi sudah di $remoteStageName');
+        throw ReceiptException(
+            statusCode: 401, message: 'Nomor resi sudah di $remoteStageName');
       }
 
       if (data['stage_id']['id'] > stageId) {
         throw ReceiptException(
+            statusCode: 400,
             message: 'Ga bisa mundur, udah nyampe $remoteStageName');
       }
 
       if (data['stage_id']['id'] < stageId - 1) {
         throw ReceiptException(
+            statusCode: 400,
             message:
                 'Jangan loncat, resi ini baru sampai tahap $remoteStageName');
       }
@@ -81,9 +86,8 @@ class ShipRepositoriesImpl extends ShipRepositories {
           return Left(Failure(message: pe.toString()));
       }
     } on ReceiptException catch (re) {
-      return Left(Failure(message: re.message));
-    } catch (e, s) {
-      print(s);
+      return Left(Failure(statusCode: re.statusCode, message: re.message));
+    } catch (e) {
       return Left(Failure(message: e.toString()));
     }
   }
@@ -173,7 +177,6 @@ class ShipRepositoriesImpl extends ShipRepositories {
 
       return Right(imgPath);
     } catch (e) {
-      print(e.toString());
       return Left(Failure(message: e.toString()));
     }
   }
@@ -182,11 +185,9 @@ class ShipRepositoriesImpl extends ShipRepositories {
   Future<Either<Failure, String>> uploadImage(String toPath, File file) async {
     try {
       final fullPath = await shipRemote.uploadImage(toPath, file);
-      print(fullPath);
 
       return Right(fullPath);
     } catch (e) {
-      print(e.toString());
       return Left(Failure(message: e.toString()));
     }
   }

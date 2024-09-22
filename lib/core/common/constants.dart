@@ -25,3 +25,7 @@ const sendStage = 5;
 const returnStage = 6;
 
 const spreadsheetIcon = "assets/excel.png";
+
+const successSound = "sounds/success.mp3";
+const skipSound = "sounds/skip.mp3";
+const repeatSound = "sounds/repeat.mp3";

@@ -34,9 +34,10 @@ class InsertShipFinished extends InsertShip {
 }
 
 class InsertShipError extends InsertShip {
+  final int statusCode;
   final String message;
 
-  InsertShipError(this.message);
+  InsertShipError(this.statusCode, this.message);
 }
 
 class ReportLoading extends ShipState {}
@@ -62,6 +63,8 @@ class ReportError extends ShipState {
 }
 
 class ReceiptImageState extends ShipState {}
+
+class ImageLoading extends ReceiptImageState {}
 
 class ImageLoaded extends ReceiptImageState {
   final String path;

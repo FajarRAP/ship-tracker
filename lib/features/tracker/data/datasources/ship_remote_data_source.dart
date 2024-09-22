@@ -46,51 +46,12 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
         'stage_id': stageId,
       });
 
-      // await supabase.from('ships_detail').insert({
-      //   'name': name,
-      //   'stage_id': stageId,
-      //   'ship_id': datas.first['id'],
-      // });
       await supabase.from('ships_detail').insert({
         'name': name,
         'stage_id': stageId,
         'ship_id': shipId,
       });
     } else {
-      // final datas = await supabase
-      //     .from('ships')
-      //     .select('id, receipt_number, stage_id(id, name)')
-      //     .eq('receipt_number', receiptNumber);
-
-      // final String remoteStageName =
-      //     datas.first['stage_id']['name'].toString().toLowerCase();
-
-      // if (datas.first['stage_id']['id'] == stageId) {
-      //   throw ReceiptException(
-      //       message: 'Nomor resi sudah di $remoteStageName');
-      // }
-
-      // if (datas.first['stage_id']['id'] > stageId) {
-      //   throw ReceiptException(
-      //       message: 'Ga bisa mundur, udah nyampe $remoteStageName');
-      // }
-
-      // if (datas.first['stage_id']['id'] < stageId - 1) {
-      //   throw ReceiptException(
-      //       message:
-      //           'Jangan loncat, resi ini baru sampai tahap $remoteStageName');
-      // }
-
-      // await supabase.from('ships_detail').insert({
-      //   'name': name,
-      //   'stage_id': stageId,
-      //   'ship_id': datas.first['id'],
-      // });
-
-      // await supabase
-      //     .from('ships')
-      //     .update({'stage_id': stageId}).eq('id', datas.first['id']);
-
       await supabase.from('ships_detail').insert({
         'name': name,
         'stage_id': stageId,
@@ -110,11 +71,13 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
   }
 
   @override
-  String getImageUrl(String path) =>
-      supabase.storage.from('receipt_images').getPublicUrl(path);
+  String getImageUrl(String path) {
+    return supabase.storage.from('receipt_images').getPublicUrl(path);
+  }
 
   @override
-  Future<String> uploadImage(String path, File file) async =>
-      await supabase.storage.from('receipt_images').upload(path, file,
-          fileOptions: const FileOptions(cacheControl: '3600', upsert: true));
+  Future<String> uploadImage(String path, File file) async {
+    return await supabase.storage.from('receipt_images').upload(path, file,
+        fileOptions: const FileOptions(cacheControl: '3600', upsert: true));
+  }
 }

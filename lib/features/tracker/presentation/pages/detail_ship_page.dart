@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:ship_tracker/core/helpers/courier_identifier.dart';
+import 'package:ship_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 
 import '../../../../core/common/constants.dart';
 import '../cubit/ship_cubit.dart';
+import '../widgets/detail_ship_info_item.dart';
 
 class DetailShipPage extends StatelessWidget {
   const DetailShipPage({super.key});
@@ -127,6 +129,7 @@ class DariChatGPT extends StatelessWidget {
   Widget build(BuildContext context) {
     final shipCubit = context.read<ShipCubit>();
     final textTheme = Theme.of(context).textTheme;
+    final String? currentUserId = context.read<AuthCubit>().user?.id;
 
     return Scaffold(
       appBar: AppBar(
@@ -159,21 +162,21 @@ class DariChatGPT extends StatelessWidget {
               },
             ),
             const SizedBox(height: 16),
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: () => context.push(cameraRoute),
-                icon: const Icon(Icons.camera_alt),
-                label: const Text('Upload Resi'),
+            if (shipCubit.ship.userId == currentUserId)
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: () => context.push(cameraRoute),
+                  icon: const Icon(Icons.camera_alt),
+                  label: const Text('Upload Resi'),
+                ),
               ),
-            ),
             const SizedBox(height: 24),
             const Divider(),
             const SizedBox(height: 16),
             Text(
               'Informasi Resi',
-              style: textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: textTheme.headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             InfoItem(
@@ -208,36 +211,6 @@ class DariChatGPT extends StatelessWidget {
   }
 }
 
-class InfoItem extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const InfoItem({
-    super.key,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
-        ),
-        Text(
-          value,
-          style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
-        ),
-      ],
-    );
-  }
-}
-
 class ImageNotFound extends StatelessWidget {
   const ImageNotFound({super.key});
 
@@ -250,6 +223,7 @@ class ImageNotFound extends StatelessWidget {
         border: Border.all(),
         borderRadius: BorderRadius.circular(6),
       ),
+      margin: const EdgeInsets.all(8),
       width: double.infinity,
       height: 300,
       child: Center(

@@ -50,3 +50,7 @@ app.*.map.json
 *.jpeg
 *.png
 *.svg
+
+# sounds
+*.mp3
+*.wav

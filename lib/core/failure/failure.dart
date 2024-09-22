@@ -1,5 +1,7 @@
-class Failure {
+class Failure 
+{
+  final int statusCode;
   final String message;
 
-  Failure({this.message = 'Ada Sesuatu Yang Salah'});
+  Failure({this.statusCode = 500, this.message = 'Ada Sesuatu Yang Salah'});
 }

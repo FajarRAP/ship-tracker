@@ -69,7 +69,7 @@ class ShipCubit extends Cubit<ShipState> {
     final result = await insertShipUseCase(receiptNumber, name, stageId);
 
     result.fold(
-      (l) => emit(InsertShipError(l.message)),
+      (l) => emit(InsertShipError(l.statusCode, l.message)),
       (r) => emit(InsertShipFinished(r)),
     );
   }
