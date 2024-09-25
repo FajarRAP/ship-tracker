@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ship_tracker/core/common/constants.dart';
-import 'package:ship_tracker/core/common/my_elevated_button.dart';
 
+import '../../../../core/common/constants.dart';
+import '../../../../core/common/my_elevated_button.dart';
 import '../../../../core/common/snackbar.dart';
 import '../cubit/auth_cubit.dart';
 
@@ -22,8 +22,14 @@ class _LoginPageState extends State<LoginPage> {
   bool isObsecure = true;
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print('build');
     final authCubit = context.read<AuthCubit>();
     final theme = Theme.of(context);
 
@@ -130,11 +136,4 @@ class _LoginPageState extends State<LoginPage> {
 
   String? validator(String? value) =>
       value!.trim().isEmpty ? 'Harap Isi' : null;
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
 }

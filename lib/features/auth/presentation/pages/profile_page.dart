@@ -88,7 +88,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
                                       await authCubit.updateUser(
-                                          {'name': _controller.text.trim()});
+                                        {'name': _controller.text.trim()},
+                                      );
                                     }
                                   },
                                   child: BlocConsumer<AuthCubit, AuthState>(
@@ -97,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         context.pop();
                                         flushbar(context, 'Berhasil Ubah Nama');
                                       }
-                                      if (state is AuthError) {
+                                      if (state is UpdateUserError) {
                                         flushbar(context, state.message);
                                       }
                                     },
@@ -169,12 +170,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     builder: (context, state) {
                       if (state is AuthLoading) {
                         return const CircularProgressIndicator(
-                            color: Colors.white);
+                          color: Colors.white,
+                        );
                       }
                       return Text(
                         'Logout',
-                        style:
-                            textTheme.titleLarge?.copyWith(color: Colors.white),
+                        style: textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                        ),
                       );
                     },
                   ),

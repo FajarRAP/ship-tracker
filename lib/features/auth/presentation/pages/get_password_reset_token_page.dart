@@ -68,8 +68,11 @@ class _GetPasswordResetTokenPageState extends State<GetPasswordResetTokenPage> {
               label: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is TokenSended) {
-                    flushbar(context,
-                        'Kode reset berhasil terkirim, silakan cek email');
+                    flushbar(context, state.message);
+                  }
+
+                  if (state is AuthError) {
+                    flushbar(context, state.message);
                   }
                 },
                 builder: (context, state) {

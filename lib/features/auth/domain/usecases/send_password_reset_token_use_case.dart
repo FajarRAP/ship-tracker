@@ -1,3 +1,6 @@
+import 'package:dartz/dartz.dart';
+
+import '../../../../core/failure/failure.dart';
 import '../repositories/auth_repositories.dart';
 
 class SendPasswordResetTokenUseCase {
@@ -5,6 +8,6 @@ class SendPasswordResetTokenUseCase {
 
   SendPasswordResetTokenUseCase(this.authRepo);
 
-  Future<void> call(String email) async =>
+  Future<Either<Failure, String>> call(String email) async =>
       await authRepo.sendPasswordResetToken(email);
 }

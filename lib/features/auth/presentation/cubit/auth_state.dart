@@ -9,7 +9,11 @@ class AuthLoading extends AuthState {}
 
 class AuthLoaded extends AuthState {}
 
-class AuthSignedOut extends AuthState {}
+class AuthSignedOut extends AuthState {
+  final String message;
+
+  AuthSignedOut(this.message);
+}
 
 class AuthError extends AuthState {
   final String message;
@@ -21,6 +25,20 @@ class UpdatingUser extends AuthState {}
 
 class UserUpdated extends AuthState {}
 
-class TokenSended extends AuthState {}
+class UpdateUserError extends AuthState {
+  final String message;
 
-class PasswordChanged extends AuthState {}
+  UpdateUserError(this.message);
+}
+
+class TokenSended extends AuthState {
+  final String message;
+
+  TokenSended(this.message);
+}
+
+class PasswordChanged extends AuthState {
+  final String message;
+
+  PasswordChanged(this.message);
+}

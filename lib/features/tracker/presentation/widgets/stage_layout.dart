@@ -84,7 +84,8 @@ class _StageLayoutState extends State<StageLayout> {
                             shipCubit.ship = state.ships[index];
                             context.push(detailReceiptRoute);
                           },
-                          contentPadding: const EdgeInsets.only(left: 16),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -102,11 +103,13 @@ class _StageLayoutState extends State<StageLayout> {
                             state.ships[index].receipt,
                             style: textTheme.titleMedium,
                           ),
-                          trailing: IconButton(
-                            onPressed: () => print(
-                                'Hapus Resi ${state.ships[index].receipt}'),
-                            icon: const Icon(Icons.delete),
-                          ),
+                          // trailing: IconButton(
+                          //   onPressed: () {
+                          //     print(state.ships[index].userId);
+                          //     print('Hapus Resi ${state.ships[index].receipt}');
+                          //   },
+                          //   icon: const Icon(Icons.delete),
+                          // ),
                         ),
                         itemCount: state.ships.length,
                       ),

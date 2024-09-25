@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ship_tracker/features/tracker/presentation/widgets/home_menu_card.dart';
 
 import '../../../../core/common/constants.dart';
 import '../../../../core/common/snackbar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../widgets/home_menu_card.dart';
 
 class TrackerPage extends StatelessWidget {
   const TrackerPage({super.key});
@@ -15,7 +15,7 @@ class TrackerPage extends StatelessWidget {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSignedOut) {
-          snackbar(context, 'Berhasil Logout');
+          snackbar(context, state.message);
           context.go(loginRoute);
         }
       },

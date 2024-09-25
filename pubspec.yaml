@@ -49,6 +49,7 @@ dependencies:
   another_flushbar: ^1.12.30
   camera: ^0.11.0+2
   audioplayers: ^6.1.0
+  connectivity_plus: ^6.0.5
 
 dev_dependencies:
   flutter_test:

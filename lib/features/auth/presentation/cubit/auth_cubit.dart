@@ -1,14 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:ship_tracker/features/auth/domain/usecases/reset_password_use_case.dart';
-import 'package:ship_tracker/features/auth/domain/usecases/send_password_reset_token_use_case.dart';
-import 'package:ship_tracker/features/auth/domain/usecases/update_user_use_case.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../service_container.dart';
 import '../../domain/usecases/login_use_case.dart';
 import '../../domain/usecases/logout_use_case.dart';
 import '../../domain/usecases/register_use_case.dart';
+import '../../domain/usecases/reset_password_use_case.dart';
+import '../../domain/usecases/send_password_reset_token_use_case.dart';
+import '../../domain/usecases/update_user_use_case.dart';
 
 part 'auth_state.dart';
 
@@ -63,7 +63,7 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await updateUserUseCase(metadata);
 
     result.fold(
-      (l) => emit(AuthError(l.message)),
+      (l) => emit(UpdateUserError(l.message)),
       (r) {
         user = r;
         emit(UserUpdated());
@@ -73,8 +73,13 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> sendPasswordResetToken(String email) async {
     emit(AuthLoading());
-    await sendPasswordResetTokenUseCase(email);
-    emit(TokenSended());
+
+    final result = await sendPasswordResetTokenUseCase(email);
+
+    result.fold(
+      (l) => emit(AuthError(l.message)),
+      (r) => emit(TokenSended(r)),
+    );
   }
 
   Future<void> resetPassword(
@@ -85,14 +90,19 @@ class AuthCubit extends Cubit<AuthState> {
 
     result.fold(
       (l) => emit(AuthError(l.message)),
-      (r) => emit(PasswordChanged()),
+      (r) => emit(
+          PasswordChanged('Password berhasil direset, silakan login kembali')),
     );
   }
 
   Future<void> logout() async {
     emit(AuthLoading());
-    await logoutUseCase();
-    emit(AuthSignedOut());
+    final result = await logoutUseCase();
+
+    result.fold(
+      (l) => emit(AuthError(l.message)),
+      (r) => emit(AuthSignedOut(r)),
+    );
   }
 
   void selectRole(dynamic role) {

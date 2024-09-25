@@ -103,8 +103,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               label: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is PasswordChanged) {
-                    snackbar(context,
-                        'Password berhasil direset, silakan login kembali');
+                    snackbar(context, state.message);
                     context.go(loginRoute);
                   }
                   if (state is AuthError) {
