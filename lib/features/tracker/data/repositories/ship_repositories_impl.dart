@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ship_tracker/service_container.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
+import '../../../../core/exceptions/network_exception.dart';
 import '../../../../core/exceptions/receipt_exception.dart';
 import '../../../../core/failure/failure.dart';
+import '../../../../core/helpers/is_internet_connected.dart';
+import '../../../../service_container.dart';
 import '../../domain/entities/ship_entity.dart';
 import '../../domain/repositories/ship_repositories.dart';
 import '../datasources/ship_local_data_source.dart';
@@ -28,13 +30,18 @@ class ShipRepositoriesImpl extends ShipRepositories {
   Future<Either<Failure, List<ShipEntity>>> getShips(int stageId) async {
     try {
       // final currentUserId = getIt.get<SupabaseClient>().auth.currentUser?.id;
-      final datas = await shipRemote.getShips(stageId);
-
       // return Right(datas
       //     .where((e) => e['receipt_number']['user_id'] == currentUserId)
       //     .map((e) => ShipModel.fromJson(e))
       //     .toList());
+
+      if (!await isInternetConnected()) return throw NetworkException();
+
+      final datas = await shipRemote.getShips(stageId);
+
       return Right(datas.map((e) => ShipModel.fromJson(e)).toList());
+    } on NetworkException catch (ne) {
+      return Left(Failure(message: ne.message));
     } catch (e) {
       return Left(Failure(message: e.toString()));
     }
@@ -44,6 +51,8 @@ class ShipRepositoriesImpl extends ShipRepositories {
   Future<Either<Failure, String>> insertShip(
       String receiptNumber, String name, int stageId) async {
     try {
+      if (!await isInternetConnected()) return throw NetworkException();
+
       final currentUserId = getIt.get<SupabaseClient>().auth.currentUser?.id;
 
       if (currentUserId == null) {
@@ -85,6 +94,8 @@ class ShipRepositoriesImpl extends ShipRepositories {
         default:
           return Left(Failure(message: pe.toString()));
       }
+    } on NetworkException catch (ne) {
+      return Left(Failure(message: ne.message));
     } on ReceiptException catch (re) {
       return Left(Failure(statusCode: re.statusCode, message: re.message));
     } catch (e) {
@@ -167,18 +178,6 @@ class ShipRepositoriesImpl extends ShipRepositories {
   }
 
   @override
-  Future<Either<Failure, List<String>>> getAllSpreadsheetFiles() async {
-    try {
-      final directory = (await getExternalStorageDirectory())!;
-      final files = await shipLocal.getAllFiles(directory);
-
-      return Right(files.map((e) => e.path).toList());
-    } catch (e) {
-      return Left(Failure(message: e.toString()));
-    }
-  }
-
-  @override
   Either<Failure, String> getImageUrl(String path) {
     try {
       final imgPath = shipRemote.getImageUrl(path);
@@ -192,9 +191,25 @@ class ShipRepositoriesImpl extends ShipRepositories {
   @override
   Future<Either<Failure, String>> uploadImage(String toPath, File file) async {
     try {
+      if (!await isInternetConnected()) throw NetworkException();
+
       final fullPath = await shipRemote.uploadImage(toPath, file);
 
       return Right(fullPath);
+    } on NetworkException catch (ne) {
+      return Left(Failure(message: ne.message));
+    } catch (e) {
+      return Left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<String>>> getAllSpreadsheetFiles() async {
+    try {
+      final directory = (await getExternalStorageDirectory())!;
+      final files = await shipLocal.getAllFiles(directory);
+
+      return Right(files.map((e) => e.path).toList());
     } catch (e) {
       return Left(Failure(message: e.toString()));
     }

@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:meta/meta.dart';
-import 'package:ship_tracker/features/tracker/domain/usecases/get_image_url_use_case.dart';
-import 'package:ship_tracker/features/tracker/domain/usecases/upload_image_use_case.dart';
+import '../../domain/usecases/get_image_url_use_case.dart';
+import '../../domain/usecases/upload_image_use_case.dart';
 
 import '../../domain/entities/ship_entity.dart';
 import '../../domain/usecases/create_report_use_case.dart';

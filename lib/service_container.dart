@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:get_it/get_it.dart';
-import 'package:ship_tracker/features/tracker/domain/usecases/get_image_url_use_case.dart';
-import 'package:ship_tracker/features/tracker/domain/usecases/upload_image_use_case.dart';
+import 'features/tracker/domain/usecases/get_image_url_use_case.dart';
+import 'features/tracker/domain/usecases/upload_image_use_case.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth/data/datasources/auth_remote_data_source.dart';

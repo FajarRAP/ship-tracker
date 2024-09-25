@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:ship_tracker/core/common/snackbar.dart';
+import '../../../../core/common/snackbar.dart';
 
 import '../../../../core/common/constants.dart';
 import '../cubit/ship_cubit.dart';
