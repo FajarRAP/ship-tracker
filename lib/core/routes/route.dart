@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../features/auth/presentation/pages/get_password_reset_token_page.dart';
@@ -122,13 +121,6 @@ final router = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const ResetPasswordPage(),
-          transitionsBuilder: transitionsBuilder),
-    ),
-    GoRoute(
-      path: barcodeScannerRoute,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const SimpleBarcodeScannerPage(),
           transitionsBuilder: transitionsBuilder),
     ),
     GoRoute(

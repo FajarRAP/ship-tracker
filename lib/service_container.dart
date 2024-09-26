@@ -1,7 +1,5 @@
 import 'package:camera/camera.dart';
 import 'package:get_it/get_it.dart';
-import 'features/tracker/domain/usecases/get_image_url_use_case.dart';
-import 'features/tracker/domain/usecases/upload_image_use_case.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
@@ -20,8 +18,10 @@ import 'features/tracker/data/repositories/ship_repositories_impl.dart';
 import 'features/tracker/domain/repositories/ship_repositories.dart';
 import 'features/tracker/domain/usecases/create_report_use_case.dart';
 import 'features/tracker/domain/usecases/get_all_spreadsheet_files_use_case.dart';
+import 'features/tracker/domain/usecases/get_image_url_use_case.dart';
 import 'features/tracker/domain/usecases/get_ships_use_case.dart';
 import 'features/tracker/domain/usecases/insert_ship_use_case.dart';
+import 'features/tracker/domain/usecases/upload_image_use_case.dart';
 import 'features/tracker/presentation/cubit/ship_cubit.dart';
 
 final getIt = GetIt.instance;
