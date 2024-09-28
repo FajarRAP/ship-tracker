@@ -2,128 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import '../../../../core/helpers/courier_identifier.dart';
-import '../../../auth/presentation/cubit/auth_cubit.dart';
 
 import '../../../../core/common/constants.dart';
+import '../../../../core/helpers/courier_identifier.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../cubit/ship_cubit.dart';
 import '../widgets/detail_ship_info_item.dart';
+import '../widgets/image_not_found.dart';
 
 class DetailShipPage extends StatelessWidget {
   const DetailShipPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const DariChatGPT();
-    // return const DariClaude();
-  }
-}
-
-class DariClaude extends StatelessWidget {
-  const DariClaude({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final shipCubit = context.read<ShipCubit>();
-
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Detail Pengiriman'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BlocBuilder<ShipCubit, ShipState>(
-                bloc: shipCubit..getImageUrl(),
-                buildWhen: (previous, current) => current is ReceiptImageState,
-                builder: (context, state) {
-                  return Column(
-                    children: [
-                      Container(
-                        height: 400,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: state is ImageLoaded
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.network(
-                                  state.path,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.image_not_supported,
-                                          size: 50),
-                                ),
-                              )
-                            : const Center(child: Icon(Icons.image, size: 50)),
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton.icon(
-                        onPressed: () => context.push(cameraRoute),
-                        icon: const Icon(Icons.camera_alt),
-                        label: const Text('Ambil Foto'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              const SizedBox(height: 24),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Informasi Pengiriman',
-                      style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(height: 16),
-                  _buildInfoRow('Ekspedisi', shipCubit.ship.name),
-                  _buildInfoRow('No. Resi', shipCubit.ship.receipt),
-                  _buildInfoRow('Status', shipCubit.ship.stage),
-                  _buildInfoRow('Tanggal', '${shipCubit.ship.createdAt}'),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.w700),
-            ),
-          ),
-          Expanded(
-            child: Text(value),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class DariChatGPT extends StatelessWidget {
-  const DariChatGPT({
-    super.key,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -205,31 +93,6 @@ class DariChatGPT extends StatelessWidget {
                   .format(shipCubit.ship.createdAt),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ImageNotFound extends StatelessWidget {
-  const ImageNotFound({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      margin: const EdgeInsets.all(8),
-      width: double.infinity,
-      height: 300,
-      child: Center(
-        child: Text(
-          'Belum Ada Gambar',
-          style: textTheme.bodyLarge,
         ),
       ),
     );

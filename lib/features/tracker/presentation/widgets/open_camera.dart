@@ -63,7 +63,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             await _initializeControllerFuture;
 
             final image = await _controller.takePicture();
-            print(image.path);
 
             if (!context.mounted) return;
 
@@ -71,7 +70,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
             await context.push(displayPictureRoute);
           } catch (e) {
-            print(e.toString());
+            debugPrint(e.toString());
           }
         },
         child: const Icon(Icons.camera_alt),
