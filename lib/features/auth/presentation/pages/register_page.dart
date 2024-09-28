@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ship_tracker/core/helpers/validators.dart';
 
 import '../../../../core/common/my_elevated_button.dart';
 import '../../../../core/common/snackbar.dart';
@@ -43,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: const InputDecoration(
                       hintText: 'Email',
                     ),
-                    validator: (value) => validator(value, 'Email'),
+                    validator: emailValidator,
                   ),
                   const SizedBox(height: 12),
                   StatefulBuilder(
@@ -60,7 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       obscureText: isObsecure,
-                      validator: (value) => validator(value, 'Password'),
+                      validator: passwordValidator,
                     ),
                   ),
                   const SizedBox(height: 12),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ship_tracker/core/helpers/validators.dart';
 
 import '../../../../core/common/constants.dart';
 import '../../../../core/common/my_elevated_button.dart';
@@ -53,7 +54,10 @@ class _GetPasswordResetTokenPageState extends State<GetPasswordResetTokenPage> {
                 decoration: const InputDecoration(
                   hintText: 'Email',
                 ),
-                validator: validator,
+                onChanged: (value) {
+                  if (!_formKey.currentState!.validate()) return;
+                },
+                validator: emailValidator,
               ),
             ),
             const SizedBox(height: 16),
@@ -108,6 +112,4 @@ class _GetPasswordResetTokenPageState extends State<GetPasswordResetTokenPage> {
       ),
     );
   }
-
-  String? validator(String? value) => value!.isEmpty ? 'Harap Isi' : null;
 }

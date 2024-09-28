@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ship_tracker/core/helpers/validators.dart';
 
 import '../../../../core/common/constants.dart';
 import '../../../../core/common/my_elevated_button.dart';
@@ -118,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   decoration: const InputDecoration(
                                     hintText: 'Nama',
                                   ),
-                                  validator: validator,
+                                  validator: inputValidator,
                                 ),
                               ),
                               title: const Text('Silakan Isi'),

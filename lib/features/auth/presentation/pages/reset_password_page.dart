@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ship_tracker/core/helpers/validators.dart';
 
 import '../../../../core/common/constants.dart';
 import '../../../../core/common/my_elevated_button.dart';
@@ -59,7 +60,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     decoration: const InputDecoration(
                       hintText: 'Kode Reset',
                     ),
-                    validator: (value) => validator('Kode reset', value),
+                    validator: tokenValidator,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
@@ -67,7 +68,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     decoration: const InputDecoration(
                       hintText: 'Email',
                     ),
-                    validator: (value) => value!.isEmpty ? 'Harap isi' : null,
+                    validator: emailValidator,
                   ),
                   const SizedBox(height: 12),
                   StatefulBuilder(
@@ -84,7 +85,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         ),
                       ),
                       obscureText: isObsecure,
-                      validator: (value) => validator('Password', value),
+                      validator: passwordValidator,
                     ),
                   ),
                 ],

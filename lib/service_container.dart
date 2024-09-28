@@ -30,30 +30,29 @@ void setup({required CameraDescription camera}) {
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
 
   // Auth
-  getIt.registerLazySingleton<AuthRemoteDataSource>(
-      () => AuthRemoteDataSourceImpl(supabase: getIt.get()));
-  getIt.registerLazySingleton<AuthRepositories>(
-      () => AuthRepositoriesImpl(authRemote: getIt.get()));
-  getIt.registerLazySingleton(() => AuthCubit(
+  getIt
+    ..registerLazySingleton<AuthRemoteDataSource>(
+        () => AuthRemoteDataSourceImpl(supabase: getIt.get()))
+    ..registerLazySingleton<AuthRepositories>(
+        () => AuthRepositoriesImpl(authRemote: getIt.get()))
+    ..registerLazySingleton(() => AuthCubit(
         loginUseCase: LoginUseCase(authRepo: getIt.get()),
         registerUseCase: RegisterUseCase(authRepo: getIt.get()),
         logoutUseCase: LogoutUseCase(authRepo: getIt.get()),
         updateUserUseCase: UpdateUserUseCase(getIt.get()),
         sendPasswordResetTokenUseCase:
             SendPasswordResetTokenUseCase(getIt.get()),
-        resetPasswordUseCase: ResetPasswordUseCase(getIt.get()),
-      ));
+        resetPasswordUseCase: ResetPasswordUseCase(getIt.get())));
 
   // Ship
-  getIt.registerLazySingleton<ShipRemoteDataSource>(
-      () => ShipRemoteDataSourceImpl(supabase: getIt.get()));
-  getIt.registerLazySingleton<ShipLocalDataSource>(
-      () => ShipLocalDataSourceImpl());
-  getIt.registerLazySingleton<ShipRepositories>(() => ShipRepositoriesImpl(
-        shipRemote: getIt.get(),
-        shipLocal: getIt.get(),
-      ));
-  getIt.registerLazySingleton(() => ShipCubit(
+  getIt
+    ..registerLazySingleton<ShipRemoteDataSource>(
+        () => ShipRemoteDataSourceImpl(supabase: getIt.get()))
+    ..registerLazySingleton<ShipLocalDataSource>(
+        () => ShipLocalDataSourceImpl())
+    ..registerLazySingleton<ShipRepositories>(() =>
+        ShipRepositoriesImpl(shipRemote: getIt.get(), shipLocal: getIt.get()))
+    ..registerLazySingleton(() => ShipCubit(
         getShipsUseCase: GetShipsUseCase(shipRepo: getIt.get()),
         insertShipUseCase: InsertShipUseCase(shipRepo: getIt.get()),
         createReportUseCase: CreateReportUseCase(shipRepo: getIt.get()),
@@ -61,6 +60,5 @@ void setup({required CameraDescription camera}) {
             GetAllSpreadsheetFilesUseCase(shipRepo: getIt.get()),
         getImageUrlUseCase: GetImageUrlUseCase(shipRepo: getIt.get()),
         uploadImageUseCase: UploadImageUseCase(shipRepo: getIt.get()),
-        camera: camera,
-      ));
+        camera: camera));
 }

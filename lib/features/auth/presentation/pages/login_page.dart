@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ship_tracker/core/helpers/validators.dart';
 
 import '../../../../core/common/constants.dart';
 import '../../../../core/common/my_elevated_button.dart';
@@ -52,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: const InputDecoration(
                       hintText: 'Email',
                     ),
-                    validator: validator,
+                    validator: emailValidator,
                   ),
                   const SizedBox(height: 12),
                   StatefulBuilder(
@@ -69,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                               : const Icon(CupertinoIcons.eye_slash_fill),
                         ),
                       ),
-                      validator: validator,
+                      validator: inputValidator,
                     ),
                   ),
                 ],
