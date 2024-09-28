@@ -87,6 +87,7 @@ Future<void> insertDialog(
                         await audioPlayer.play(AssetSource(skipSound));
                         break;
                       case 401:
+                      case 23505:
                         await audioPlayer.play(AssetSource(repeatSound));
                         break;
                     }

@@ -5,8 +5,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/common/constants.dart';
 
 abstract class ShipRemoteDataSource {
-  Future<Map<String, dynamic>> getShip(String receiptNumber);
-  Future<List<Map<String, dynamic>>> getShips(int stageId);
+  Future<List<Map<String, dynamic>>> getShips(String receiptNumber);
+  Future<List<Map<String, dynamic>>> getShipsByStageId(int stageId);
   Future<List<Map<String, dynamic>>> getAllShips();
   Future<void> insertShip(String? currentUserId, String receiptNumber,
       String name, int stageId, int shipId);
@@ -20,15 +20,14 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
   ShipRemoteDataSourceImpl({required this.supabase});
 
   @override
-  Future<Map<String, dynamic>> getShip(String receiptNumber) async =>
-      (await supabase
-              .from('ships')
-              .select('id, receipt_number, stage_id(id, name)')
-              .eq('receipt_number', receiptNumber))
-          .first;
+  Future<List<Map<String, dynamic>>> getShips(String receiptNumber) async =>
+      await supabase
+          .from('ships')
+          .select('id, receipt_number, stage_id(id, name)')
+          .eq('receipt_number', receiptNumber);
 
   @override
-  Future<List<Map<String, dynamic>>> getShips(int stageId) async {
+  Future<List<Map<String, dynamic>>> getShipsByStageId(int stageId) async {
     return await supabase
         .from('ships_detail')
         .select(
@@ -40,16 +39,16 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
   Future<void> insertShip(String? currentUserId, String receiptNumber,
       String name, int stageId, int shipId) async {
     if (stageId == scanStage) {
-      await supabase.from('ships').insert({
+      final data = await supabase.from('ships').insert({
         'user_id': currentUserId,
         'receipt_number': receiptNumber,
         'stage_id': stageId,
-      });
+      }).select();
 
       await supabase.from('ships_detail').insert({
         'name': name,
         'stage_id': stageId,
-        'ship_id': shipId,
+        'ship_id': data.first['id'],
       });
     } else {
       await supabase.from('ships_detail').insert({

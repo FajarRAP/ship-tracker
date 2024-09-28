@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:ship_tracker/core/common/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
@@ -37,13 +38,13 @@ class ShipRepositoriesImpl extends ShipRepositories {
 
       if (!await isInternetConnected()) return throw NetworkException();
 
-      final datas = await shipRemote.getShips(stageId);
+      final datas = await shipRemote.getShipsByStageId(stageId);
 
       return Right(datas.map((e) => ShipModel.fromJson(e)).toList());
     } on NetworkException catch (ne) {
       return Left(Failure(message: ne.message));
     } catch (e) {
-      return Left(Failure(message: e.toString()));
+      return Left(Failure());
     }
   }
 
@@ -60,46 +61,59 @@ class ShipRepositoriesImpl extends ShipRepositories {
             statusCode: 403, message: 'Pengguna harus login');
       }
 
-      final data = await shipRemote.getShip(receiptNumber);
-      final String remoteStageName =
-          data['stage_id']['name'].toString().toLowerCase();
-      final int shipId = data['id'];
+      if (stageId > scanStage) {
+        final datas = await shipRemote.getShips(receiptNumber);
 
-      if (data['stage_id']['id'] == stageId) {
-        throw ReceiptException(
-            statusCode: 401, message: 'Nomor resi sudah di $remoteStageName');
+        if (datas.isEmpty) {
+          throw ReceiptException(
+              statusCode: 400, message: 'Nomor resi belum di scan sama sekali');
+        }
+
+        final data = datas.first;
+        final String remoteStageName =
+            data['stage_id']['name'].toString().toLowerCase();
+        final int shipId = data['id'];
+
+        if (data['stage_id']['id'] == stageId) {
+          throw ReceiptException(
+              statusCode: 401, message: 'Nomor resi sudah di $remoteStageName');
+        }
+
+        if (data['stage_id']['id'] > stageId) {
+          throw ReceiptException(
+              statusCode: 400,
+              message: 'Ga bisa mundur, udah nyampe $remoteStageName');
+        }
+
+        if (data['stage_id']['id'] < stageId - 1) {
+          throw ReceiptException(
+              statusCode: 400,
+              message:
+                  'Jangan loncat, resi ini baru sampai tahap $remoteStageName');
+        }
+
+        await shipRemote.insertShip(
+            currentUserId, receiptNumber, name, stageId, shipId);
+      } else {
+        await shipRemote.insertShip(
+            currentUserId, receiptNumber, name, stageId, -1);
       }
-
-      if (data['stage_id']['id'] > stageId) {
-        throw ReceiptException(
-            statusCode: 400,
-            message: 'Ga bisa mundur, udah nyampe $remoteStageName');
-      }
-
-      if (data['stage_id']['id'] < stageId - 1) {
-        throw ReceiptException(
-            statusCode: 400,
-            message:
-                'Jangan loncat, resi ini baru sampai tahap $remoteStageName');
-      }
-
-      await shipRemote.insertShip(
-          currentUserId, receiptNumber, name, stageId, shipId);
 
       return const Right('Berhasil Menyimpan');
     } on PostgrestException catch (pe) {
       switch (pe.code) {
         case '23505':
-          return Left(Failure(message: 'Nomor resi sudah di scan'));
+          return Left(
+              Failure(statusCode: 23505, message: 'Nomor resi sudah di scan'));
         default:
-          return Left(Failure(message: pe.toString()));
+          return Left(Failure());
       }
     } on NetworkException catch (ne) {
       return Left(Failure(message: ne.message));
     } on ReceiptException catch (re) {
       return Left(Failure(statusCode: re.statusCode, message: re.message));
     } catch (e) {
-      return Left(Failure(message: e.toString()));
+      return Left(Failure());
     }
   }
 
@@ -173,7 +187,7 @@ class ShipRepositoriesImpl extends ShipRepositories {
 
       return const Right('Berhasil Membuat Laporan');
     } catch (e) {
-      return Left(Failure(message: e.toString()));
+      return Left(Failure());
     }
   }
 
@@ -184,7 +198,7 @@ class ShipRepositoriesImpl extends ShipRepositories {
 
       return Right(imgPath);
     } catch (e) {
-      return Left(Failure(message: e.toString()));
+      return Left(Failure());
     }
   }
 
@@ -199,7 +213,7 @@ class ShipRepositoriesImpl extends ShipRepositories {
     } on NetworkException catch (ne) {
       return Left(Failure(message: ne.message));
     } catch (e) {
-      return Left(Failure(message: e.toString()));
+      return Left(Failure());
     }
   }
 
@@ -211,7 +225,7 @@ class ShipRepositoriesImpl extends ShipRepositories {
 
       return Right(files.map((e) => e.path).toList());
     } catch (e) {
-      return Left(Failure(message: e.toString()));
+      return Left(Failure());
     }
   }
 }
