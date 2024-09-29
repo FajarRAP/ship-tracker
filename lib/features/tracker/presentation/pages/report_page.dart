@@ -36,7 +36,6 @@ class ReportPage extends StatelessWidget {
               ],
             ),
           ],
-          automaticallyImplyLeading: false,
           title: const Text('Laporan'),
         ),
         body: BlocBuilder<ShipCubit, ShipState>(

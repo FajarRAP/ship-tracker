@@ -82,7 +82,7 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
     return await supabase
         .from(environment == 'dev' ? 'ships_detail_dev' : 'ships_detail')
         .select(
-            'name, receipt_number:ship_id(receipt_number, user_id), stage_name:stage_id(name), created_at');
+            'name, receipt_number:ship_id(receipt_number, user_id, id), stage_name:stage_id(name), created_at');
   }
 
   @override
@@ -98,6 +98,9 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
 
   @override
   Future<void> deleteShip(int shipId) async {
-    await supabase.from(environment == 'dev' ? 'ships_dev' : 'ships').delete().eq('id', shipId);
+    await supabase
+        .from(environment == 'dev' ? 'ships_dev' : 'ships')
+        .delete()
+        .eq('id', shipId);
   }
 }
