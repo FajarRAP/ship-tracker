@@ -124,12 +124,12 @@ class ShipCubit extends Cubit<ShipState> {
   }
 
   Future<void> deleteShip(int shipId) async {
-    emit(ShipLoading());
+    emit(DeleteShipLoading());
     final result = await deleteShipUseCase(shipId);
 
     result.fold(
-      (l) => emit(ShipError(l.message)),
-      (r) => emit(DeleteShipSuccess('Berhasil Menghapus Resi')),
+      (l) => emit(DeleteShipError(l.message)),
+      (r) => emit(DeleteShipSuccess('Berhasil menghapus resi')),
     );
   }
 }
