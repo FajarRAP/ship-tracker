@@ -27,7 +27,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: const Text('Daftar Akun'),
       ),
       body: Padding(

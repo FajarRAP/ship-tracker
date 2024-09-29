@@ -33,7 +33,6 @@ class _GetPasswordResetTokenPageState extends State<GetPasswordResetTokenPage> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: const Text('Reset Password'),
       ),
       body: Padding(

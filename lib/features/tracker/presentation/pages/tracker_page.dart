@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ship_tracker/service_container.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as sp;
 
 import '../../../../core/common/constants.dart';
 import '../../../../core/common/snackbar.dart';
@@ -87,7 +89,12 @@ class TrackerPage extends StatelessWidget {
           color: Colors.blue,
         ),
         HomeMenuCard(
-          title: 'Scan Checking',
+          title: 'Scan Ambil Resi',
+          route: pickUpReceiptRoute,
+          color: Colors.brown,
+        ),
+        HomeMenuCard(
+          title: 'Scan Checker',
           route: checkReceiptRoute,
           color: Colors.red,
         ),
@@ -112,6 +119,17 @@ class TrackerPage extends StatelessWidget {
           color: Colors.teal,
           icon: Icons.line_axis_rounded,
         ),
+        // ElevatedButton(
+        //   onPressed: () async {
+        //     final res = await getIt.get<sp.SupabaseClient>().auth.signUp(
+        //       password: '072489tk',
+        //       email: 'diandi.adm2@gmail.com',
+        //       data: {'is_admin': true},
+        //     );
+        //     print(res.user);
+        //   },
+        //   child: const Text('REG'),
+        // ),
       ],
     );
   }

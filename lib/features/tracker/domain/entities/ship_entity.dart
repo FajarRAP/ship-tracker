@@ -15,5 +15,6 @@ class ShipEntity {
     required this.createdAt,
   });
 
-  String get formattedDate => DateFormat('d-M-y H:mm:ss').format(createdAt);
+  String get formattedDate => DateFormat('dd-MM-y HH:mm:ss')
+      .format(createdAt.add(const Duration(hours: 6)));
 }

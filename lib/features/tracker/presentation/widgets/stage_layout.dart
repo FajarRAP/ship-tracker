@@ -39,12 +39,12 @@ class _StageLayoutState extends State<StageLayout> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: Text(widget.appBarTitle),
       ),
       body: Column(
         children: [
-          Padding(
+          Container(
+            color: theme.colorScheme.surface,
             padding: const EdgeInsets.all(16),
             child: TextField(
               controller: _controller,
@@ -102,13 +102,13 @@ class _StageLayoutState extends State<StageLayout> {
                             state.ships[index].receipt,
                             style: textTheme.titleMedium,
                           ),
-                          // trailing: IconButton(
-                          //   onPressed: () {
-                          //     print(state.ships[index].userId);
-                          //     print('Hapus Resi ${state.ships[index].receipt}');
-                          //   },
-                          //   icon: const Icon(Icons.delete),
-                          // ),
+                          trailing: GestureDetector(
+                            onTap: () {
+                              print(state.ships[index].userId);
+                              print('Hapus Resi ${state.ships[index].receipt}');
+                            },
+                            child: const Icon(Icons.delete),
+                          ),
                         ),
                         itemCount: state.ships.length,
                       ),
@@ -124,7 +124,11 @@ class _StageLayoutState extends State<StageLayout> {
                 );
               }
               if (state is ShipError) {
-                return Expanded(child: Center(child: Text(state.message)));
+                return Expanded(
+                  child: Center(
+                    child: Text(state.message),
+                  ),
+                );
               }
               return const SizedBox();
             },

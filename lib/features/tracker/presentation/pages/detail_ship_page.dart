@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/common/constants.dart';
 import '../../../../core/helpers/courier_identifier.dart';
@@ -21,7 +20,6 @@ class DetailShipPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: const Text('Detail Resi'),
       ),
       body: Padding(
@@ -89,8 +87,7 @@ class DetailShipPage extends StatelessWidget {
             const SizedBox(height: 8),
             InfoItem(
               label: 'Tanggal Scan',
-              value: DateFormat('dd-MM-y, HH:m:s')
-                  .format(shipCubit.ship.createdAt),
+              value: shipCubit.ship.formattedDate,
             ),
           ],
         ),

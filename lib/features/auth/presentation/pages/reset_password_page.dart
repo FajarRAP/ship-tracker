@@ -37,7 +37,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: const Text('Reset Password'),
       ),
       body: Padding(
