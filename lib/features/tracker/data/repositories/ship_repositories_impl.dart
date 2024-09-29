@@ -124,26 +124,35 @@ class ShipRepositoriesImpl extends ShipRepositories {
           .map((e) => ShipModel.fromJson(e))
           .toList();
 
-      final workbook = Workbook(6);
+      final workbook = Workbook(7);
       final sheet1 = workbook.worksheets[0];
       final sheet2 = workbook.worksheets[1];
       final sheet3 = workbook.worksheets[2];
       final sheet4 = workbook.worksheets[3];
       final sheet5 = workbook.worksheets[4];
       final sheet6 = workbook.worksheets[5];
+      final sheet7 = workbook.worksheets[6];
 
       sheet1.name = 'Semua';
       sheet2.name = 'Scan';
-      sheet3.name = 'Check';
-      sheet4.name = 'Pack';
-      sheet5.name = 'Kirim';
-      sheet6.name = 'Return';
+      sheet3.name = 'Ambil Barang';
+      sheet4.name = 'Check';
+      sheet5.name = 'Pack';
+      sheet6.name = 'Kirim';
+      sheet7.name = 'Return';
 
       generateSheetsData(
         isFirstSheet: true,
         sheet: sheet1,
         datas: ships,
-        title: ['Scan Resi', 'Check Resi', 'Packing', 'Kirim', 'Return'],
+        title: [
+          'Scan Resi',
+          'Ambil Barang',
+          'Check Resi',
+          'Packing',
+          'Kirim',
+          'Return',
+        ],
       );
       generateSheetsData(
         sheet: sheet2,
@@ -154,23 +163,29 @@ class ShipRepositoriesImpl extends ShipRepositories {
       generateSheetsData(
         sheet: sheet3,
         datas: ships,
+        title: ['Ambil Barang'],
+        stageName: 'Pick Up',
+      );
+      generateSheetsData(
+        sheet: sheet4,
+        datas: ships,
         title: ['Check Resi'],
         stageName: 'Check',
       );
       generateSheetsData(
-        sheet: sheet4,
+        sheet: sheet5,
         datas: ships,
         title: ['Packing'],
         stageName: 'Pack',
       );
       generateSheetsData(
-        sheet: sheet5,
+        sheet: sheet6,
         datas: ships,
         title: ['Kirim'],
         stageName: 'Send',
       );
       generateSheetsData(
-        sheet: sheet6,
+        sheet: sheet7,
         datas: ships,
         title: ['Return'],
         stageName: 'Return',
@@ -182,7 +197,7 @@ class ShipRepositoriesImpl extends ShipRepositories {
       final directory = await getExternalStorageDirectory();
       final path = directory?.path;
       File file = File(
-          '$path/report_${DateFormat('d-M-y_H:mm:s').format(DateTime.now())}.xlsx');
+          '$path/report_${DateFormat('d-M-y_H:mm:s').format(DateTime.now())}.xlsx'); // Add 7 hours to sync with WIB
       await file.writeAsBytes(bytes, flush: true);
 
       return const Right('Berhasil Membuat Laporan');
@@ -280,7 +295,7 @@ void generateSheetsData({
         '${i + 1}',
         receipts[i],
         ...names,
-        DateFormat('d-M-y').format(temp.last.createdAt)
+        DateFormat('d-M-y').format(temp.last.syncWithWIB)
       ];
 
       for (int j = 0; j < data.length; j++) {
@@ -301,8 +316,9 @@ void generateSheetsData({
         '${i + 1}',
         filtered[i].receipt,
         filtered[i].name,
-        DateFormat('d-M-y').format(filtered[i].createdAt),
-        DateFormat.Hms().format(filtered[i].createdAt)
+        DateFormat('d-M-y').format(filtered[i].syncWithWIB),
+        // Add 7 hours to sync with WIB
+        DateFormat.Hms().format(filtered[i].syncWithWIB)
       ];
 
       for (int j = 0; j < 5; j++) {

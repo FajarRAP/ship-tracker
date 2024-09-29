@@ -20,11 +20,11 @@ const barcodeScannerRoute = "/barcode-scanner";
 const displayPictureRoute = "/picture";
 
 const scanStage = 2;
-const checkStage = 3;
-const packStage = 4;
-const sendStage = 5;
-const returnStage = 6;
-const pickUpStage = 7;
+const pickUpStage = 3;
+const checkStage = 4;
+const packStage = 5;
+const sendStage = 6;
+const returnStage = 7;
 
 const spreadsheetIcon = "assets/excel.png";
 

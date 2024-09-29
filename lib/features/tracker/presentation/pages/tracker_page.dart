@@ -89,7 +89,7 @@ class TrackerPage extends StatelessWidget {
           color: Colors.blue,
         ),
         HomeMenuCard(
-          title: 'Scan Ambil Resi',
+          title: 'Scan Ambil Barang',
           route: pickUpReceiptRoute,
           color: Colors.brown,
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ship_tracker/features/tracker/presentation/widgets/expandable_fab.dart';
 
 import '../../../../core/common/constants.dart';
 import '../../../../core/helpers/courier_identifier.dart';
@@ -135,7 +136,21 @@ class _StageLayoutState extends State<StageLayout> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton:
+          // ExpandableFab(
+          //   distance: 1,
+          //   children: [
+          //     IconButton(
+          //       onPressed: () {},
+          //       icon: const Icon(Icons.document_scanner_rounded),
+          //     ),
+          //     IconButton(
+          //       onPressed: () {},
+          //       icon: const Icon(Icons.barcode_reader),
+          //     ),
+          //   ],
+          // ),
+          FloatingActionButton(
         onPressed: widget.onTap,
         child: const Icon(Icons.document_scanner_rounded),
       ),

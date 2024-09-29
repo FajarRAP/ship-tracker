@@ -16,20 +16,24 @@ abstract class ShipRemoteDataSource {
 
 class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
   final SupabaseClient supabase;
+  final String environment;
 
-  ShipRemoteDataSourceImpl({required this.supabase});
+  ShipRemoteDataSourceImpl({
+    required this.supabase,
+    this.environment = 'dev',
+  });
 
   @override
   Future<List<Map<String, dynamic>>> getShips(String receiptNumber) async =>
       await supabase
-          .from('ships')
+          .from(environment == 'dev' ? 'ships_dev' : 'ships')
           .select('id, receipt_number, stage_id(id, name)')
           .eq('receipt_number', receiptNumber);
 
   @override
   Future<List<Map<String, dynamic>>> getShipsByStageId(int stageId) async {
     return await supabase
-        .from('ships_detail')
+        .from(environment == 'dev' ? 'ships_detail_dev' : 'ships_detail')
         .select(
             'name, receipt_number:ship_id(receipt_number, user_id), stage_name:stage_id(name), created_at')
         .eq('stage_id', stageId);
@@ -39,33 +43,33 @@ class ShipRemoteDataSourceImpl extends ShipRemoteDataSource {
   Future<void> insertShip(String? currentUserId, String receiptNumber,
       String name, int stageId, int shipId) async {
     if (stageId == scanStage) {
-      final data = await supabase.from('ships').insert({
+      final data = await supabase.from(environment == 'dev' ? 'ships_dev' : 'ships').insert({
         'user_id': currentUserId,
         'receipt_number': receiptNumber,
         'stage_id': stageId,
       }).select();
 
-      await supabase.from('ships_detail').insert({
+      await supabase.from(environment == 'dev' ? 'ships_detail_dev' :'ships_detail').insert({
         'name': name,
         'stage_id': stageId,
         'ship_id': data.first['id'],
       });
     } else {
-      await supabase.from('ships_detail').insert({
+      await supabase.from(environment == 'dev' ? 'ships_detail_dev' :'ships_detail').insert({
         'name': name,
         'stage_id': stageId,
         'ship_id': shipId,
       });
 
       await supabase
-          .from('ships')
+          .from(environment == 'dev' ? 'ships_dev' : 'ships')
           .update({'stage_id': stageId}).eq('id', shipId);
     }
   }
 
   @override
   Future<List<Map<String, dynamic>>> getAllShips() async {
-    return await supabase.from('ships_detail').select(
+    return await supabase.from(environment == 'dev' ? 'ships_detail_dev' :'ships_detail').select(
         'name, receipt_number:ship_id(receipt_number, user_id), stage_name:stage_id(name), created_at');
   }
 

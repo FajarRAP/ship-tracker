@@ -15,6 +15,8 @@ class ShipEntity {
     required this.createdAt,
   });
 
-  String get formattedDate => DateFormat('dd-MM-y HH:mm:ss')
-      .format(createdAt.add(const Duration(hours: 6)));
+  DateTime get syncWithWIB => createdAt.add(const Duration(hours: 7));
+
+  String get formattedDate =>
+      DateFormat('dd-MM-y HH:mm:ss').format(syncWithWIB);
 }
