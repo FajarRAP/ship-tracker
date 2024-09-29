@@ -40,6 +40,12 @@ class InsertShipError extends InsertShip {
   InsertShipError(this.statusCode, this.message);
 }
 
+class DeleteShipSuccess extends ShipState {
+  final String message;
+
+  DeleteShipSuccess(this.message);
+}
+
 class ReportLoading extends ShipState {}
 
 class ReportLoaded extends ShipState {}

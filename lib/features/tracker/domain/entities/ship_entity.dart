@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 
 class ShipEntity {
+  final int id;
   final String receipt;
   final String name;
   final String stage;
@@ -8,6 +9,7 @@ class ShipEntity {
   final DateTime createdAt;
 
   ShipEntity({
+    required this.id,
     required this.receipt,
     required this.name,
     required this.stage,

@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ship_tracker/features/tracker/domain/usecases/delete_ship_use_case.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
@@ -55,6 +56,7 @@ void setup({required CameraDescription camera}) {
     ..registerLazySingleton(() => ShipCubit(
         getShipsUseCase: GetShipsUseCase(shipRepo: getIt.get()),
         insertShipUseCase: InsertShipUseCase(shipRepo: getIt.get()),
+        deleteShipUseCase: DeleteShipUseCase(shipRepo: getIt.get()),
         createReportUseCase: CreateReportUseCase(shipRepo: getIt.get()),
         getAllSpreadsheetFilesUseCase:
             GetAllSpreadsheetFilesUseCase(shipRepo: getIt.get()),

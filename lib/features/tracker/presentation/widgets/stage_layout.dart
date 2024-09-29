@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:ship_tracker/core/common/snackbar.dart';
+import 'package:ship_tracker/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:ship_tracker/features/tracker/domain/entities/ship_entity.dart';
 import 'package:ship_tracker/features/tracker/presentation/widgets/expandable_fab.dart';
 
 import '../../../../core/common/constants.dart';
@@ -56,9 +60,15 @@ class _StageLayoutState extends State<StageLayout> {
               onChanged: shipCubit.filterShips,
             ),
           ),
-          BlocBuilder<ShipCubit, ShipState>(
+          BlocConsumer<ShipCubit, ShipState>(
             bloc: shipCubit..getShips(widget.stageId),
             buildWhen: (previous, current) => current is GetShip,
+            listener: (context, state) {
+              if (state is DeleteShipSuccess) {
+                shipCubit.getShips(widget.stageId);
+                flushbar(context, state.message);
+              }
+            },
             builder: (context, state) {
               if (state is ShipLoading) {
                 return const Expanded(
@@ -94,7 +104,8 @@ class _StageLayoutState extends State<StageLayout> {
                                 style: textTheme.titleLarge,
                               ),
                               Text(
-                                state.ships[index].formattedDate,
+                                DateFormat('d-MM-y')
+                                    .format(state.ships[index].syncWithWIB),
                                 style: textTheme.bodyMedium,
                               ),
                             ],
@@ -103,13 +114,7 @@ class _StageLayoutState extends State<StageLayout> {
                             state.ships[index].receipt,
                             style: textTheme.titleMedium,
                           ),
-                          trailing: GestureDetector(
-                            onTap: () {
-                              print(state.ships[index].userId);
-                              print('Hapus Resi ${state.ships[index].receipt}');
-                            },
-                            child: const Icon(Icons.delete),
-                          ),
+                          trailing: _buildDeleteButton(state.ships[index]),
                         ),
                         itemCount: state.ships.length,
                       ),
@@ -154,6 +159,24 @@ class _StageLayoutState extends State<StageLayout> {
         onPressed: widget.onTap,
         child: const Icon(Icons.document_scanner_rounded),
       ),
+    );
+  }
+
+  Widget _buildDeleteButton(ShipEntity ship) {
+    final bool isAdmin =
+        context.read<AuthCubit>().user?.userMetadata?['is_admin'] == true;
+    final shipCubit = context.read<ShipCubit>();
+
+    if (!isAdmin) return const SizedBox();
+
+    return GestureDetector(
+      onTap: () async {
+        print(ship.id);
+        print(ship.userId);
+        print('Hapus Resi ${ship.receipt}');
+        await shipCubit.deleteShip(ship.id);
+      },
+      child: const Icon(Icons.delete),
     );
   }
 }

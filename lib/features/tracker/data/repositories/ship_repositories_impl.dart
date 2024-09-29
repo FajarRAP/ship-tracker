@@ -62,7 +62,7 @@ class ShipRepositoriesImpl extends ShipRepositories {
       }
 
       if (stageId > scanStage) {
-        final datas = await shipRemote.getShips(receiptNumber);
+        final datas = await shipRemote.getShipsByReceiptNumber(receiptNumber);
 
         if (datas.isEmpty) {
           throw ReceiptException(
@@ -241,6 +241,16 @@ class ShipRepositoriesImpl extends ShipRepositories {
       return Right(files.map((e) => e.path).toList());
     } catch (e) {
       return Left(Failure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> deleteShip(int shipId) async {
+    try {
+      await shipRemote.deleteShip(shipId);
+      return const Right('Berhasil Menghapus Resi');
+    } catch (e) {
+      return Left(Failure(message: e.toString()));
     }
   }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:meta/meta.dart';
+import 'package:ship_tracker/features/tracker/domain/usecases/delete_ship_use_case.dart';
 import '../../domain/usecases/get_image_url_use_case.dart';
 import '../../domain/usecases/upload_image_use_case.dart';
 
@@ -18,6 +19,7 @@ class ShipCubit extends Cubit<ShipState> {
   ShipCubit({
     required this.getShipsUseCase,
     required this.insertShipUseCase,
+    required this.deleteShipUseCase,
     required this.createReportUseCase,
     required this.getAllSpreadsheetFilesUseCase,
     required this.getImageUrlUseCase,
@@ -27,6 +29,7 @@ class ShipCubit extends Cubit<ShipState> {
 
   final GetShipsUseCase getShipsUseCase;
   final InsertShipUseCase insertShipUseCase;
+  final DeleteShipUseCase deleteShipUseCase;
   final CreateReportUseCase createReportUseCase;
   final GetAllSpreadsheetFilesUseCase getAllSpreadsheetFilesUseCase;
   final GetImageUrlUseCase getImageUrlUseCase;
@@ -117,6 +120,16 @@ class ShipCubit extends Cubit<ShipState> {
     result.fold(
       (l) => emit(UploadImageError(l.message)),
       (r) => emit(ImageUploaded(r)),
+    );
+  }
+
+  Future<void> deleteShip(int shipId) async {
+    emit(ShipLoading());
+    final result = await deleteShipUseCase(shipId);
+
+    result.fold(
+      (l) => emit(ShipError(l.message)),
+      (r) => emit(DeleteShipSuccess('Berhasil Menghapus Resi')),
     );
   }
 }
